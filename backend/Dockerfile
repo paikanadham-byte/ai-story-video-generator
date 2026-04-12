@@ -20,9 +20,11 @@ RUN npm ci --omit=dev
 # Copy source
 COPY . .
 
-# Create output directory
-RUN mkdir -p ./output
+# Create output directory with proper permissions
+RUN mkdir -p ./output && chmod 777 ./output
 
-EXPOSE 3001
+# HF Spaces uses port 7860 by default
+ENV PORT=7860
+EXPOSE 7860
 
 CMD ["node", "src/index.js"]
