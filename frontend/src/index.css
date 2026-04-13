@@ -399,16 +399,16 @@ body{font-family:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;background:
 /* ═══ LIGHT THEME ═══ */
 [data-theme="light"]{
   --bg-primary:#f4f5f7;--bg-secondary:#ffffff;--bg-sidebar:#1a1a2e;
-  --bg-card:rgba(255,255,255,0.85);--bg-card-hover:rgba(255,255,255,0.95);
-  --bg-glass:rgba(255,255,255,0.7);--bg-input:#f0f1f4;
-  --bg-input-focus:#e8e9ee;
-  --border:rgba(26,26,46,0.1);--border-focus:#e94560;
-  --text-primary:#1a1a2e;--text-secondary:#4a4a6a;--text-muted:#8b8ba3;
+  --bg-card:rgba(255,255,255,0.9);--bg-card-hover:rgba(255,255,255,0.98);
+  --bg-glass:rgba(255,255,255,0.7);--bg-input:#ecedf1;
+  --bg-input-focus:#e4e5eb;
+  --border:rgba(26,26,46,0.12);--border-focus:#e94560;
+  --text-primary:#141428;--text-secondary:#3d3d5c;--text-muted:#6b6b8a;
   --accent:#e94560;--accent-2:#1a1a2e;--accent-3:#f43f5e;--accent-4:#f59e0b;
   --accent-glow:rgba(233,69,96,0.15);
   --gradient-primary:linear-gradient(135deg,#e94560 0%,#c62a40 100%);
   --gradient-accent:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
-  --gradient-glass:linear-gradient(135deg,rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.6) 100%);
+  --gradient-glass:linear-gradient(135deg,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.7) 100%);
   --gradient-sidebar:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);
   --shadow:0 2px 12px rgba(26,26,46,0.08);--shadow-lg:0 4px 24px rgba(26,26,46,0.12);
   --shadow-glow:0 0 30px rgba(233,69,96,0.08);
@@ -473,6 +473,43 @@ body{font-family:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;background:
 [data-theme="light"] .range-input{background:rgba(26,26,46,0.06);border-color:rgba(26,26,46,0.1)}
 [data-theme="light"] .mobile-topbar{background:#fff;border-color:rgba(26,26,46,0.08)}
 [data-theme="light"] .video-wrapper{box-shadow:var(--shadow-lg)}
+[data-theme="light"] .page-header h2{color:#141428}
+[data-theme="light"] .page-header p{color:#3d3d5c}
+[data-theme="light"] .card-title{color:#141428}
+[data-theme="light"] .stat-value{color:#141428}
+[data-theme="light"] .stat-label{color:#6b6b8a}
+[data-theme="light"] .form-label{color:#3d3d5c}
+[data-theme="light"] .textarea-input::placeholder,[data-theme="light"] .text-input::placeholder{color:#8b8ba3}
+[data-theme="light"] .char-count{color:#8b8ba3}
+[data-theme="light"] .generate-btn{box-shadow:0 4px 20px rgba(233,69,96,0.2)}
+[data-theme="light"] .generate-btn:hover:not(:disabled){box-shadow:0 8px 32px rgba(233,69,96,0.3)}
+[data-theme="light"] .btn-primary{box-shadow:0 2px 12px rgba(233,69,96,0.2)}
+[data-theme="light"] .btn-primary:hover{box-shadow:0 4px 24px rgba(233,69,96,0.3)}
+[data-theme="light"] .progress-percent{background:var(--gradient-primary);-webkit-background-clip:text;background-clip:text}
+[data-theme="light"] .progress-step{color:var(--accent)}
+[data-theme="light"] .progress-detail{color:#3d3d5c}
+[data-theme="light"] .spinner{border-color:rgba(26,26,46,0.1);border-top-color:var(--accent)}
+[data-theme="light"] .how-step h4{color:#141428}
+[data-theme="light"] .how-step p{color:#3d3d5c}
+[data-theme="light"] .tool-name{color:#141428}
+[data-theme="light"] .tool-desc{color:#6b6b8a}
+[data-theme="light"] .upload-title{color:#141428}
+[data-theme="light"] .upload-subtitle{color:#3d3d5c}
+[data-theme="light"] .quick-action h3{color:#141428}
+[data-theme="light"] .quick-action p{color:#3d3d5c}
+[data-theme="light"] .feature-card h3{color:#141428}
+[data-theme="light"] .feature-card p{color:#3d3d5c}
+[data-theme="light"] .seo-value.title{color:var(--accent)}
+[data-theme="light"] .seo-value.desc{color:#3d3d5c}
+[data-theme="light"] .auth-container{background:var(--bg-primary)}
+[data-theme="light"] .auth-header h1{color:#141428;-webkit-text-fill-color:#141428}
+[data-theme="light"] .auth-header p{color:#6b6b8a}
+[data-theme="light"] .auth-form h2{color:#141428}
+[data-theme="light"] .auth-field label{color:#3d3d5c}
+[data-theme="light"] .auth-switch{color:#3d3d5c}
+[data-theme="light"] .auth-divider span{color:#8b8ba3}
+[data-theme="light"] .nav-item.active::before{background:var(--accent)}
+[data-theme="light"] .mobile-brand{color:#141428;-webkit-text-fill-color:#141428}
 /* Light theme: Keep sidebar dark for brand consistency */
 [data-theme="light"] .sidebar{background:var(--gradient-sidebar);border-color:rgba(255,255,255,0.07)}
 [data-theme="light"] .sidebar .brand-text h1{color:#e2e8f0}

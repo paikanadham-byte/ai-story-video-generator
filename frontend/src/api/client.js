@@ -195,3 +195,20 @@ export async function separateVocals(file) {
   }
   return res.json();
 }
+
+// ── Image Enhancement APIs ──
+
+export async function enhanceImage(file, filters) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("filters", JSON.stringify(filters));
+  const res = await fetch(`${API_BASE}/enhance/process`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Enhancement failed" }));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+}

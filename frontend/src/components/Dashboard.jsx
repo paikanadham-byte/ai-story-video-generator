@@ -60,6 +60,12 @@ function Dashboard({ onNavigate }) {
           <h3>{t.vocalRemover}</h3>
           <p>{t.vocalRemoverDesc}</p>
         </button>
+
+        <button className="quick-action" onClick={() => onNavigate("image-enhance")}>
+          <div className="quick-action-icon">🖼️</div>
+          <h3>{t.imageEnhancer}</h3>
+          <p>{t.imageEnhancerDesc}</p>
+        </button>
       </div>
 
       <div className="page-header" style={{ marginBottom: 16 }}>

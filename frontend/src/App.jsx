@@ -13,6 +13,7 @@ import ProFeatures from "./components/ProFeatures.jsx";
 import ApiAccess from "./components/ApiAccess.jsx";
 import VoiceCloning from "./components/VoiceCloning.jsx";
 import VocalRemover from "./components/VocalRemover.jsx";
+import ImageEnhancer from "./components/ImageEnhancer.jsx";
 import AuthPage from "./components/AuthPage.jsx";
 import Settings from "./components/Settings.jsx";
 import Feedback from "./components/Feedback.jsx";
@@ -171,6 +172,7 @@ function App() {
     if (page === "editor") return <VideoEditor />;
     if (page === "copyright") return <CopyrightTransformer />;
     if (page === "vocal-remover") return <VocalRemover />;
+    if (page === "image-enhance") return <ImageEnhancer />;
     if (page === "pro") return <ProFeatures />;
     if (page === "api") return <ApiAccess />;
     if (page === "voice-clone") return <VoiceCloning />;

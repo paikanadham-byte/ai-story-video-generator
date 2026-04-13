@@ -65,6 +65,11 @@ function Sidebar({ activePage, onNavigate, user, onSignOut, mobileOpen, onCloseM
           <span className="nav-badge">{t.new}</span>
         </button>
 
+        <button className={`nav-item ${activePage === "image-enhance" ? "active" : ""}`} onClick={() => nav("image-enhance")}>
+          <span className="nav-icon">🖼️</span> {t.imageEnhancer}
+          <span className="nav-badge">{t.new}</span>
+        </button>
+
         <div className="nav-section-label">{t.proFeatures}</div>
 
         <button className={`nav-item ${activePage === "voice-clone" ? "active" : ""}`} onClick={() => nav("voice-clone")}>

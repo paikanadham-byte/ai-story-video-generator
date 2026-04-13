@@ -13,6 +13,7 @@ import editorRouter from "./routes/editor.js";
 import proRouter from "./routes/pro.js";
 import voicesRouter from "./routes/voices.js";
 import vocalRouter from "./routes/vocal.js";
+import enhanceRouter from "./routes/enhance.js";
 import authRouter from "./routes/auth.js";
 import { ensureDir } from "./utils/helpers.js";
 import { initSupabaseStorage } from "./utils/supabase.js";
@@ -44,6 +45,7 @@ app.use("/api/editor", editorRouter);
 app.use("/api/pro", proRouter);
 app.use("/api/voices", voicesRouter);
 app.use("/api/vocal", vocalRouter);
+app.use("/api/enhance", enhanceRouter);
 
 // Feedback endpoint
 app.post("/api/feedback", (req, res) => {
