@@ -67,10 +67,12 @@ function AuthPage({ onAuth }) {
     setError(null);
     setLoading(true);
     try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+      const redirectBase = backendUrl || window.location.origin;
       const { error: err } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin + "/oauth/consent",
+          redirectTo: redirectBase + "/oauth/consent",
         },
       });
       if (err) throw err;
