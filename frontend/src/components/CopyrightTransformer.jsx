@@ -1,19 +1,21 @@
 import { useState, useRef } from "react";
 import { io } from "socket.io-client";
 import { uploadVideo, startTransform, downloadVideoUrl } from "../api/client.js";
+import { useI18n } from "../utils/i18n.js";
 
-const TRANSFORMS = [
-  { id: "revoice", icon: "🎙️", title: "Replace Voiceover", desc: "Re-generate narration with a completely new AI voice" },
-  { id: "mirror", icon: "🪞", title: "Mirror / Flip Video", desc: "Horizontally flip the video to avoid visual detection" },
-  { id: "crop", icon: "📐", title: "Crop & Resize", desc: "Change aspect ratio and crop edges of the video" },
-  { id: "speed", icon: "⚡", title: "Alter Speed", desc: "Slightly speed up or slow down to change timing" },
-  { id: "color", icon: "🎨", title: "Color Grade", desc: "Apply a color filter to change the visual look entirely" },
-  { id: "music", icon: "🎵", title: "Replace Music", desc: "Remove original background music and add new royalty-free track" },
-  { id: "subtitles", icon: "💬", title: "Add Subtitles", desc: "Burn new styled subtitles into the video" },
-  { id: "zoom", icon: "🔍", title: "Ken Burns Effect", desc: "Add slow zoom/pan motion to make static shots dynamic" },
+const TRANSFORM_DEFS = [
+  { id: "revoice", icon: "🎙️", titleKey: "ct_revoice", descKey: "ct_revoiceDesc" },
+  { id: "mirror", icon: "🪞", titleKey: "ct_mirror", descKey: "ct_mirrorDesc" },
+  { id: "crop", icon: "📐", titleKey: "ct_crop", descKey: "ct_cropDesc" },
+  { id: "speed", icon: "⚡", titleKey: "ct_speed", descKey: "ct_speedDesc" },
+  { id: "color", icon: "🎨", titleKey: "ct_color", descKey: "ct_colorDesc" },
+  { id: "music", icon: "🎵", titleKey: "ct_music", descKey: "ct_musicDesc" },
+  { id: "subtitles", icon: "💬", titleKey: "ct_subtitles", descKey: "ct_subtitlesDesc" },
+  { id: "zoom", icon: "🔍", titleKey: "ct_zoom", descKey: "ct_zoomDesc" },
 ];
 
 function CopyrightTransformer() {
+  const t = useI18n();
   const [videoFile, setVideoFile] = useState(null);
   const [videoSrc, setVideoSrc] = useState(null);
   const [serverPath, setServerPath] = useState(null);
@@ -145,12 +147,12 @@ function CopyrightTransformer() {
       <div className="page-header">
         <div className="page-header-row">
           <div>
-            <h2>Copyright Transformer 🛡️</h2>
-            <p>Transform any video to make it copyright-safe for re-uploading</p>
+            <h2>{t.copyrightTitle}</h2>
+            <p>{t.copyrightDesc}</p>
           </div>
           {videoSrc && (
             <button className="btn btn-secondary" onClick={handleReset}>
-              ← Upload New
+              {t.uploadNew}
             </button>
           )}
         </div>
@@ -172,8 +174,8 @@ function CopyrightTransformer() {
           onClick={() => fileRef.current?.click()}
         >
           <div className="upload-icon">🛡️</div>
-          <div className="upload-title">Drop a video to make it copyright-safe</div>
-          <div className="upload-subtitle">We'll transform it so you can re-upload on YouTube, TikTok, Instagram</div>
+          <div className="upload-title">{t.copyrightDropTitle}</div>
+          <div className="upload-subtitle">{t.copyrightDropSub}</div>
 
           <input
             ref={fileRef}
@@ -183,7 +185,7 @@ function CopyrightTransformer() {
             onChange={(e) => handleFile(e.target.files[0])}
           />
 
-          <div className="upload-or">— or paste a video URL —</div>
+          <div className="upload-or">{t.orPasteUrl}</div>
 
           <div className="url-input-row" onClick={(e) => e.stopPropagation()}>
             <input
@@ -192,7 +194,7 @@ function CopyrightTransformer() {
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
             />
-            <button className="btn btn-primary" onClick={handleUrlLoad}>Load</button>
+            <button className="btn btn-primary" onClick={handleUrlLoad}>{t.load}</button>
           </div>
         </div>
       ) : (
@@ -200,7 +202,7 @@ function CopyrightTransformer() {
           {uploading && (
             <div className="card" style={{ textAlign: "center", padding: "20px" }}>
               <div className="spinner" />
-              <p style={{ color: "var(--text-secondary)" }}>Uploading video to server...</p>
+              <p style={{ color: "var(--text-secondary)" }}>{t.uploading}</p>
             </div>
           )}
 
@@ -209,12 +211,12 @@ function CopyrightTransformer() {
             <div className="editor-preview">
               <video src={resultUrl || videoSrc} controls style={{ width: "100%", maxHeight: 340, borderRadius: 12, background: "#000" }} />
               <div className="editor-filename">
-                {resultUrl ? "✅ Copyright-safe output" : fileName}
+                {resultUrl ? t.copyrightSafeOutput : fileName}
               </div>
             </div>
             {resultUrl && (
               <div style={{ textAlign: "center", marginTop: 10 }}>
-                <a href={resultUrl} download className="btn btn-primary">⬇️ Download Result</a>
+                <a href={resultUrl} download className="btn btn-primary">{t.downloadResult}</a>
               </div>
             )}
           </div>
@@ -234,27 +236,27 @@ function CopyrightTransformer() {
           {!processing && (
             <div className="card">
               <div className="card-title">
-                <span>🔧</span> Select Transformations
-                <span className="badge">{selected.length} selected</span>
+                <span>🔧</span> {t.selectTransformations}
+                <span className="badge">{selected.length} {t.selected}</span>
               </div>
 
               <p style={{ color: "var(--text-secondary)", fontSize: 12, marginBottom: 14 }}>
-                Select which changes to apply. More transformations = more copyright-safe result.
+                {t.transformHint}
               </p>
 
               <div className="transform-options">
-                {TRANSFORMS.map((t) => {
-                  const isSelected = selected.includes(t.id);
+                {TRANSFORM_DEFS.map((tr) => {
+                  const isSelected = selected.includes(tr.id);
                   return (
                     <button
-                      key={t.id}
+                      key={tr.id}
                       className={`transform-option ${isSelected ? "selected" : ""}`}
-                      onClick={() => toggleTransform(t.id)}
+                      onClick={() => toggleTransform(tr.id)}
                     >
                       <div className="transform-check">{isSelected ? "✓" : ""}</div>
                       <div className="transform-info">
-                        <h4>{t.icon} {t.title}</h4>
-                        <p>{t.desc}</p>
+                        <h4>{tr.icon} {t[tr.titleKey]}</h4>
+                        <p>{t[tr.descKey]}</p>
                       </div>
                     </button>
                   );
@@ -269,7 +271,7 @@ function CopyrightTransformer() {
               onClick={handleTransform}
               disabled={processing || uploading || selected.length === 0 || !serverPath}
             >
-              {uploading ? "Uploading..." : `🛡️ Apply ${selected.length} Transformations`}
+              {uploading ? t.loading : `🛡️ ${t.applyTransformations} (${selected.length})`}
             </button>
           )}
 

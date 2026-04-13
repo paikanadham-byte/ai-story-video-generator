@@ -1,4 +1,8 @@
+import { useI18n } from "../utils/i18n.js";
+import Logo from "./Logo.jsx";
+
 function Sidebar({ activePage, onNavigate, user, onSignOut, mobileOpen, onCloseMobile }) {
+  const t = useI18n();
   const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
   const email = user?.email || "";
   const avatar = user?.user_metadata?.avatar_url;
@@ -14,10 +18,10 @@ function Sidebar({ activePage, onNavigate, user, onSignOut, mobileOpen, onCloseM
       <aside className={`sidebar ${mobileOpen ? "open" : ""}`}>
       <div className="sidebar-brand">
         <div className="sidebar-brand-inner">
-          <div className="brand-icon">🎬</div>
+          <div className="brand-icon"><Logo size={34} /></div>
           <div className="brand-text">
-            <h1>StoryForge AI</h1>
-            <p>Video Generator Studio</p>
+            <h1>PM Studio</h1>
+            <p>AI Video Generator</p>
           </div>
         </div>
         <button className="sidebar-close-btn" onClick={onCloseMobile}>✕</button>
@@ -34,61 +38,61 @@ function Sidebar({ activePage, onNavigate, user, onSignOut, mobileOpen, onCloseM
       </div>
 
       <nav className="sidebar-nav">
-        <div className="nav-section-label">Main</div>
+        <div className="nav-section-label">{t.main}</div>
 
         <button className={`nav-item ${activePage === "dashboard" ? "active" : ""}`} onClick={() => nav("dashboard")}>
-          <span className="nav-icon">🏠</span> Dashboard
+          <span className="nav-icon">🏠</span> {t.dashboard}
         </button>
 
         <button className={`nav-item ${activePage === "create" ? "active" : ""}`} onClick={() => nav("create")}>
-          <span className="nav-icon">✨</span> Create Video
+          <span className="nav-icon">✨</span> {t.createVideo}
         </button>
 
-        <div className="nav-section-label">Tools</div>
+        <div className="nav-section-label">{t.tools}</div>
 
         <button className={`nav-item ${activePage === "editor" ? "active" : ""}`} onClick={() => nav("editor")}>
-          <span className="nav-icon">🎞️</span> Video Editor
-          <span className="nav-badge">NEW</span>
+          <span className="nav-icon">🎞️</span> {t.videoEditor}
+          <span className="nav-badge">{t.new}</span>
         </button>
 
         <button className={`nav-item ${activePage === "copyright" ? "active" : ""}`} onClick={() => nav("copyright")}>
-          <span className="nav-icon">🛡️</span> Copyright Fix
-          <span className="nav-badge">HOT</span>
+          <span className="nav-icon">🛡️</span> {t.copyrightFix}
+          <span className="nav-badge">{t.hot}</span>
         </button>
 
-        <div className="nav-section-label">Pro Features</div>
+        <div className="nav-section-label">{t.proFeatures}</div>
 
         <button className={`nav-item ${activePage === "voice-clone" ? "active" : ""}`} onClick={() => nav("voice-clone")}>
-          <span className="nav-icon">🧬</span> Voice Cloning
-          <span className="nav-badge pro">PRO</span>
+          <span className="nav-icon">🧬</span> {t.voiceCloning}
+          <span className="nav-badge pro">{t.pro}</span>
         </button>
 
         <button className={`nav-item ${activePage === "api" ? "active" : ""}`} onClick={() => nav("api")}>
-          <span className="nav-icon">📱</span> API Access
-          <span className="nav-badge pro">PRO</span>
+          <span className="nav-icon">📱</span> {t.apiAccess}
+          <span className="nav-badge pro">{t.pro}</span>
         </button>
 
         <button className={`nav-item ${activePage === "pro" ? "active" : ""}`} onClick={() => nav("pro")}>
-          <span className="nav-icon">💎</span> All Features
+          <span className="nav-icon">💎</span> {t.allFeatures}
         </button>
 
-        <div className="nav-section-label">More</div>
+        <div className="nav-section-label">{t.more}</div>
 
         <button className={`nav-item ${activePage === "feedback" ? "active" : ""}`} onClick={() => nav("feedback")}>
-          <span className="nav-icon">💬</span> Feedback
+          <span className="nav-icon">💬</span> {t.feedback}
         </button>
 
         <button className={`nav-item ${activePage === "settings" ? "active" : ""}`} onClick={() => nav("settings")}>
-          <span className="nav-icon">⚙️</span> Settings
+          <span className="nav-icon">⚙️</span> {t.settings}
         </button>
       </nav>
 
       <div className="sidebar-footer">
         <div className="pro-banner unlocked">
-          <h4>💎 Pro Unlocked</h4>
-          <p>All premium features active</p>
+          <h4>{t.proUnlocked}</h4>
+          <p>{t.allPremiumActive}</p>
           <div className="pro-badge-row">
-            <span className="pro-active-badge">✅ Active</span>
+            <span className="pro-active-badge">✅ {t.active}</span>
           </div>
         </div>
       </div>

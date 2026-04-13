@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useI18n } from "../utils/i18n.js";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 function Feedback() {
+  const t = useI18n();
   const [type, setType] = useState("feedback");
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
@@ -33,18 +35,18 @@ function Feedback() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h2>Feedback 💬</h2>
-        <p>Help us improve — report bugs, request features, or just say hi!</p>
+        <h2>{t.feedbackTitle}</h2>
+        <p>{t.feedbackDesc}</p>
       </div>
 
       {sent ? (
         <div className="card glow" style={{ textAlign: "center", padding: 44 }}>
           <div style={{ fontSize: 56, marginBottom: 14 }}>✅</div>
-          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Thank You!</h3>
+          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{t.thankYou}</h3>
           <p style={{ color: "var(--text-secondary)", marginBottom: 20 }}>
-            Your feedback has been received. We appreciate your input!
+            {t.feedbackReceived}
           </p>
-          <button className="btn btn-primary" onClick={() => setSent(false)}>Send Another</button>
+          <button className="btn btn-primary" onClick={() => setSent(false)}>{t.sendAnother}</button>
         </div>
       ) : (
         <>
@@ -55,13 +57,13 @@ function Feedback() {
           )}
 
           <div className="card">
-            <div className="card-title"><span>📝</span> Type</div>
+            <div className="card-title"><span>📝</span> {t.type}</div>
             <div className="option-grid">
               {[
-                { id: "feedback", label: "💡 General Feedback" },
-                { id: "bug", label: "🐛 Bug Report" },
-                { id: "feature", label: "✨ Feature Request" },
-                { id: "question", label: "❓ Question" },
+                { id: "feedback", label: t.generalFeedback },
+                { id: "bug", label: t.bugReport },
+                { id: "feature", label: t.featureRequest },
+                { id: "question", label: t.question },
               ].map((t) => (
                 <button
                   key={t.id}
@@ -75,11 +77,11 @@ function Feedback() {
           </div>
 
           <div className="card">
-            <div className="card-title"><span>✍️</span> Your Message</div>
+            <div className="card-title"><span>✍️</span> {t.yourMessage}</div>
             <div className="form-group">
               <textarea
                 className="textarea-input"
-                placeholder="Tell us what you think, describe a bug, or suggest a feature..."
+                placeholder={t.messagePlaceholder}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={6}
@@ -89,11 +91,11 @@ function Feedback() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Email (optional)</label>
+              <label className="form-label">{t.emailOptional}</label>
               <input
                 className="text-input"
                 type="email"
-                placeholder="your@email.com — so we can respond"
+                placeholder={t.emailPlaceholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -105,7 +107,7 @@ function Feedback() {
             onClick={handleSend}
             disabled={sending || !message.trim()}
           >
-            {sending ? "Sending..." : "📨 Send Feedback"}
+            {sending ? t.sending : t.sendFeedback}
           </button>
         </>
       )}

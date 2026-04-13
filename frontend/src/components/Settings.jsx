@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../utils/supabase.js";
+import { useI18n } from "../utils/i18n.js";
 
 const APP_LANGUAGES = [
   { code: "en", name: "English", dir: "ltr" },
@@ -18,6 +19,7 @@ const APP_LANGUAGES = [
 ];
 
 function Settings({ user, onSignOut, appLang, onChangeLang }) {
+  const t = useI18n();
   const [confirmLogout, setConfirmLogout] = useState(false);
   const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
   const email = user?.email || "";
@@ -32,13 +34,13 @@ function Settings({ user, onSignOut, appLang, onChangeLang }) {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h2>Settings ⚙️</h2>
-        <p>Manage your account and app preferences</p>
+        <h2>{t.settingsPage}</h2>
+        <p>{t.settingsDesc}</p>
       </div>
 
       {/* Profile */}
       <div className="card">
-        <div className="card-title"><span>👤</span> Profile</div>
+        <div className="card-title"><span>👤</span> {t.profile}</div>
         <div className="settings-profile">
           <div className="settings-avatar">
             {avatar ? (
@@ -59,9 +61,9 @@ function Settings({ user, onSignOut, appLang, onChangeLang }) {
 
       {/* App Language */}
       <div className="card">
-        <div className="card-title"><span>🌐</span> App Language</div>
+        <div className="card-title"><span>🌐</span> {t.appLanguage}</div>
         <p style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 14 }}>
-          Change the interface language of the app
+          {t.appLanguageDesc}
         </p>
         <div className="settings-lang-grid">
           {APP_LANGUAGES.map((lang) => (
@@ -78,26 +80,26 @@ function Settings({ user, onSignOut, appLang, onChangeLang }) {
 
       {/* Theme */}
       <div className="card">
-        <div className="card-title"><span>🎨</span> Theme</div>
+        <div className="card-title"><span>🎨</span> {t.theme}</div>
         <div className="option-grid">
-          <button className="option-button active">🌙 Dark</button>
-          <button className="option-button" disabled style={{ opacity: 0.4 }}>☀️ Light (Coming Soon)</button>
+          <button className="option-button active">{t.dark}</button>
+          <button className="option-button" disabled style={{ opacity: 0.4 }}>{t.lightComingSoon}</button>
         </div>
       </div>
 
       {/* Logout */}
       <div className="card">
-        <div className="card-title"><span>🚪</span> Account</div>
+        <div className="card-title"><span>🚪</span> {t.account}</div>
         {!confirmLogout ? (
           <button className="btn settings-logout-btn" onClick={() => setConfirmLogout(true)}>
-            ⏻ Sign Out
+            {t.signOut}
           </button>
         ) : (
           <div className="settings-confirm-logout">
-            <p>Are you sure you want to sign out?</p>
+            <p>{t.confirmLogout}</p>
             <div style={{ display: "flex", gap: 10 }}>
-              <button className="btn btn-secondary" onClick={() => setConfirmLogout(false)}>Cancel</button>
-              <button className="btn settings-logout-btn-confirm" onClick={handleLogout}>Yes, Sign Out</button>
+              <button className="btn btn-secondary" onClick={() => setConfirmLogout(false)}>{t.cancel}</button>
+              <button className="btn settings-logout-btn-confirm" onClick={handleLogout}>{t.yesSignOut}</button>
             </div>
           </div>
         )}

@@ -1,9 +1,12 @@
+import { useI18n } from "../utils/i18n.js";
+
 function ProgressScreen({ progress, currentStep, detail, completedSteps, steps, stepLabels }) {
+  const t = useI18n();
   return (
     <div className="page-container">
       <div className="page-header" style={{ textAlign: "center" }}>
-        <h2>Generating Your Video</h2>
-        <p>Sit back — this may take a few minutes</p>
+        <h2>{t.generatingYourVideo}</h2>
+        <p>{t.sitBack}</p>
       </div>
 
       <div className="card progress-card glow">

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { getApiKeyInfo } from "../api/client.js";
+import { useI18n } from "../utils/i18n.js";
 
 function ApiAccess() {
+  const t = useI18n();
   const [apiInfo, setApiInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(null);
@@ -25,7 +27,7 @@ function ApiAccess() {
       <div className="page-container">
         <div className="card" style={{ textAlign: "center", padding: 40 }}>
           <div className="spinner" />
-          <p style={{ color: "var(--text-secondary)" }}>Loading API info...</p>
+          <p style={{ color: "var(--text-secondary)" }}>{t.loadingApiInfo}</p>
         </div>
       </div>
     );
@@ -34,13 +36,13 @@ function ApiAccess() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h2>API Access 📱</h2>
-        <p>Use the REST API to integrate video generation into your own apps</p>
+        <h2>{t.apiPageTitle}</h2>
+        <p>{t.apiPageDesc}</p>
       </div>
 
       <div className="card glow">
         <div className="card-title">
-          <span>🔑</span> Your API Key
+          <span>🔑</span> {t.yourApiKey}
         </div>
         <div className="api-key-box">
           <code className="api-key-value">
@@ -48,10 +50,10 @@ function ApiAccess() {
           </code>
           <div className="api-key-actions">
             <button className="btn btn-secondary" onClick={() => setShowKey(!showKey)}>
-              {showKey ? "🙈 Hide" : "👁️ Show"}
+              {showKey ? t.hide : t.show}
             </button>
             <button className="btn btn-primary" onClick={() => handleCopy(apiInfo?.apiKey, "key")}>
-              {copied === "key" ? "✅ Copied!" : "📋 Copy"}
+              {copied === "key" ? t.copied : t.copy}
             </button>
           </div>
         </div>
@@ -59,19 +61,19 @@ function ApiAccess() {
 
       <div className="card">
         <div className="card-title">
-          <span>🌐</span> Base URL
+          <span>🌐</span> {t.baseUrl}
         </div>
         <div className="api-key-box">
           <code className="api-key-value">{apiInfo?.baseUrl}</code>
           <button className="btn btn-secondary" onClick={() => handleCopy(apiInfo?.baseUrl, "url")}>
-            {copied === "url" ? "✅ Copied!" : "📋 Copy"}
+            {copied === "url" ? t.copied : t.copy}
           </button>
         </div>
       </div>
 
       <div className="card">
         <div className="card-title">
-          <span>📚</span> API Endpoints
+          <span>📚</span> {t.apiEndpoints}
         </div>
         <div className="api-endpoints">
           {(apiInfo?.endpoints || []).map((ep, i) => (
@@ -86,7 +88,7 @@ function ApiAccess() {
 
       <div className="card">
         <div className="card-title">
-          <span>💻</span> Quick Start Example
+          <span>💻</span> {t.quickStartExample}
         </div>
         <div className="code-block">
           <div className="code-header">
@@ -133,28 +135,28 @@ console.log("Generation started:", jobId);`}</pre>
 
       <div className="card">
         <div className="card-title">
-          <span>📊</span> Usage
+          <span>📊</span> {t.usage}
         </div>
         <div className="stats-grid" style={{ marginBottom: 0 }}>
           <div className="stat-card">
             <div className="stat-icon purple">♾️</div>
             <div className="stat-value">∞</div>
-            <div className="stat-label">Requests / Day</div>
+            <div className="stat-label">{t.requestsPerDay}</div>
           </div>
           <div className="stat-card">
             <div className="stat-icon cyan">⚡</div>
             <div className="stat-value">∞</div>
-            <div className="stat-label">Rate Limit</div>
+            <div className="stat-label">{t.rateLimit}</div>
           </div>
           <div className="stat-card">
             <div className="stat-icon pink">🎬</div>
             <div className="stat-value">∞</div>
-            <div className="stat-label">Video Renders</div>
+            <div className="stat-label">{t.videoRenders}</div>
           </div>
           <div className="stat-card">
             <div className="stat-icon amber">📱</div>
             <div className="stat-value">11</div>
-            <div className="stat-label">Endpoints</div>
+            <div className="stat-label">{t.endpoints}</div>
           </div>
         </div>
       </div>

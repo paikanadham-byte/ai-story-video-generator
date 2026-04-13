@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { generateSEO, generateThumbnailPrompts } from "../api/client.js";
+import { useI18n } from "../utils/i18n.js";
 
 function VideoPreview({ result, onReset }) {
+  const t = useI18n();
   const { videoUrl, subtitlesUrl, script, duration } = result;
 
   const [seo, setSeo] = useState(null);
@@ -74,7 +76,7 @@ function VideoPreview({ result, onReset }) {
   return (
     <div className="page-container">
       <div className="page-header" style={{ textAlign: "center" }}>
-        <h2>🎉 Your Video is Ready!</h2>
+        <h2>{t.videoReady}</h2>
         <p>{script?.title}</p>
       </div>
 
@@ -97,7 +99,7 @@ function VideoPreview({ result, onReset }) {
             )}
           </video>
           <div style={{ textAlign: "center", marginTop: 6, fontSize: 12, color: "var(--text-muted)" }}>
-            📝 Auto captions are burned into the video • Subtitles also available as a separate SRT download
+            {t.captionNote}
           </div>
         </div>
 
@@ -107,15 +109,15 @@ function VideoPreview({ result, onReset }) {
 
         <div className="video-actions">
           <a href={videoUrl} download className="btn btn-primary">
-            ⬇️ Download MP4
+            {t.downloadMP4}
           </a>
           {subtitlesUrl && (
             <a href={subtitlesUrl} download className="btn btn-secondary">
-              📄 Download Subtitles
+              {t.downloadSubtitles}
             </a>
           )}
           <button className="btn btn-secondary" onClick={onReset}>
-            ✨ Create Another
+            {t.createAnother}
           </button>
         </div>
       </div>
@@ -123,7 +125,7 @@ function VideoPreview({ result, onReset }) {
       {/* 💎 Direct Upload */}
       <div className="card">
         <div className="card-title">
-          <span>🔗</span> Direct Upload
+          <span>🔗</span> {t.directUpload}
           <span className="badge" style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: "var(--gradient-accent)", color: "white", fontWeight: 700, marginLeft: 8 }}>PRO</span>
         </div>
         <div className="upload-platforms">
@@ -141,33 +143,33 @@ function VideoPreview({ result, onReset }) {
               <span className="platform-icon">{p.icon}</span>
               <span className="platform-name">{p.name}</span>
               <span className="platform-status">
-                {uploadStatus[p.id] === "uploading" ? "Preparing..." :
-                 uploadStatus[p.id] === "ready" ? "✅ Ready to publish" :
-                 "Upload →"}
+                {uploadStatus[p.id] === "uploading" ? t.uploadPreparing :
+                 uploadStatus[p.id] === "ready" ? t.uploadReady :
+                 t.uploadBtn}
               </span>
             </button>
           ))}
         </div>
         <p style={{ color: "var(--text-muted)", fontSize: 11, marginTop: 10, textAlign: "center" }}>
-          Connect your accounts in Settings to enable one-click publishing
+          {t.connectAccounts}
         </p>
       </div>
 
       {/* 📈 SEO Generator */}
       <div className="card">
         <div className="card-title">
-          <span>📈</span> SEO Title & Description
+          <span>📈</span> {t.seoTitle}
           <span className="badge" style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: "var(--gradient-accent)", color: "white", fontWeight: 700, marginLeft: 8 }}>PRO</span>
         </div>
         {!seo ? (
           <button className="idea-btn" onClick={handleGenerateSEO} disabled={seoLoading}>
-            {seoLoading ? "Generating SEO..." : "📈 Generate SEO Metadata"}
+            {seoLoading ? t.generatingSEO : t.generateSEO}
           </button>
         ) : (
           <div className="seo-results">
             <div className="seo-field">
               <div className="seo-field-header">
-                <label>Optimized Title</label>
+                <label>{t.optimizedTitle}</label>
                 <button className="copy-btn" onClick={() => handleCopy(seo.seoTitle, "title")}>
                   {copied === "title" ? "✅" : "📋"}
                 </button>
@@ -176,7 +178,7 @@ function VideoPreview({ result, onReset }) {
             </div>
             <div className="seo-field">
               <div className="seo-field-header">
-                <label>Description</label>
+                <label>{t.description}</label>
                 <button className="copy-btn" onClick={() => handleCopy(seo.description, "desc")}>
                   {copied === "desc" ? "✅" : "📋"}
                 </button>
@@ -185,7 +187,7 @@ function VideoPreview({ result, onReset }) {
             </div>
             <div className="seo-field">
               <div className="seo-field-header">
-                <label>Tags</label>
+                <label>{t.tags}</label>
                 <button className="copy-btn" onClick={() => handleCopy((seo.tags || []).join(", "), "tags")}>
                   {copied === "tags" ? "✅" : "📋"}
                 </button>
@@ -198,7 +200,7 @@ function VideoPreview({ result, onReset }) {
             </div>
             {seo.hashtags && (
               <div className="seo-field">
-                <label>Hashtags</label>
+                <label>{t.hashtags}</label>
                 <div className="seo-tags">
                   {seo.hashtags.map((h, i) => (
                     <span key={i} className="seo-tag hashtag">{h}</span>
@@ -207,7 +209,7 @@ function VideoPreview({ result, onReset }) {
               </div>
             )}
             <button className="idea-btn" onClick={handleGenerateSEO} disabled={seoLoading} style={{ marginTop: 10 }}>
-              {seoLoading ? "Regenerating..." : "🔄 Regenerate"}
+              {seoLoading ? t.regenerating : t.regenerate}
             </button>
           </div>
         )}
@@ -216,29 +218,30 @@ function VideoPreview({ result, onReset }) {
       {/* 🤖 AI Thumbnail Generator */}
       <div className="card">
         <div className="card-title">
-          <span>🤖</span> AI Thumbnail Generator
+          <span>🤖</span> {t.aiThumbnail}
           <span className="badge" style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: "var(--gradient-accent)", color: "white", fontWeight: 700, marginLeft: 8 }}>PRO</span>
         </div>
         {!thumbnails ? (
           <button className="idea-btn" onClick={handleGenerateThumbnails} disabled={thumbLoading}>
-            {thumbLoading ? "Generating concepts..." : "🤖 Generate Thumbnail Concepts"}
+            {thumbLoading ? t.generatingThumbnails : t.generateThumbnails}
           </button>
         ) : (
           <div className="thumbnail-concepts">
-            {thumbnails.map((t, i) => (
+            {thumbnails.map((th, i) => (
               <div key={i} className="thumbnail-card">
-                <div className="thumb-preview" style={{ background: `linear-gradient(135deg, ${t.colorScheme?.split(" ")[0] || "#8b5cf6"} 0%, ${t.colorScheme?.split(" ").pop() || "#06b6d4"} 100%)` }}>
-                  <span className="thumb-text-overlay">{t.textOverlay}</span>
-                  <span className="thumb-style-badge">{t.style}</span>
+                <div className="thumb-preview" style={{ background: `linear-gradient(135deg, ${th.colorScheme?.split(" ")[0] || "#8b5cf6"} 0%, ${th.colorScheme?.split(" ").pop() || "#06b6d4"} 100%)` }}>
+                  <span className="thumb-text-overlay">{th.textOverlay}</span>
+                  <span className="thumb-style-badge">{th.style}</span>
                 </div>
                 <div className="thumb-info">
-                  <h4>{t.concept}</h4>
-                  <p>{t.description}</p>
+                  <h4>{th.concept}</h4>
+                  <p>{th.description}</p>
                 </div>
               </div>
-            ))}
+            ))
+            }
             <button className="idea-btn" onClick={handleGenerateThumbnails} disabled={thumbLoading} style={{ marginTop: 10 }}>
-              {thumbLoading ? "Regenerating..." : "🔄 Generate More Concepts"}
+              {thumbLoading ? t.regenerating : t.generateMoreConcepts}
             </button>
           </div>
         )}
@@ -248,7 +251,7 @@ function VideoPreview({ result, onReset }) {
       {script?.scenes && (
         <div className="card">
           <div className="card-title">
-            <span>📜</span> Script ({script.scenes.length} scenes)
+            <span>📜</span> {t.script} ({script.scenes.length} {t.scene})
           </div>
           <div style={{ maxHeight: 400, overflowY: "auto" }}>
             {script.scenes.map((scene) => (
@@ -265,7 +268,7 @@ function VideoPreview({ result, onReset }) {
                   color: "var(--accent)",
                   marginBottom: 4,
                 }}>
-                  Scene {scene.sceneNumber} • {scene.emotion} • {scene.estimatedDuration}s
+                  {t.scene} {scene.sceneNumber} • {scene.emotion} • {scene.estimatedDuration}s
                 </div>
                 <div style={{ fontSize: 14, lineHeight: 1.5 }}>
                   {scene.narration}

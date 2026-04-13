@@ -1,35 +1,37 @@
 import { useState, useRef } from "react";
 import { io } from "socket.io-client";
 import { uploadVideo, startTransform } from "../api/client.js";
+import { useI18n } from "../utils/i18n.js";
 
-const TOOLS = [
-  { id: "subtitles", icon: "💬", name: "Auto Subtitles", desc: "Generate & burn subtitles" },
-  { id: "revoice", icon: "🎙️", name: "Re-Voice", desc: "Replace audio with AI voice" },
-  { id: "resize", icon: "📐", name: "Resize", desc: "Resize for TikTok/Reels/Shorts" },
-  { id: "trim", icon: "✂️", name: "Trim & Cut", desc: "Trim start/end of video" },
-  { id: "music", icon: "🎵", name: "Add Music", desc: "Add background music track" },
-  { id: "speed", icon: "⚡", name: "Speed", desc: "Speed up or slow down" },
-  { id: "filter", icon: "🎨", name: "Filters", desc: "Apply color filters & effects" },
-  { id: "flip", icon: "🔄", name: "Mirror/Flip", desc: "Flip video horizontally" },
-  { id: "watermark", icon: "✏️", name: "Text Overlay", desc: "Add custom text on video" },
-  { id: "volume", icon: "🔊", name: "Volume", desc: "Adjust audio volume level" },
-  { id: "pitch", icon: "🎛️", name: "Pitch", desc: "Change audio pitch" },
-  { id: "overlay", icon: "🖼️", name: "Overlay", desc: "Add image overlay on video" },
-  { id: "transition", icon: "🔀", name: "Transitions", desc: "Add transition effects" },
-  { id: "voicechanger", icon: "🗣️", name: "Voice Changer", desc: "Apply voice effects" },
-  { id: "watermark_remove", icon: "🧹", name: "Remove Watermark", desc: "Remove watermarks from video" },
-  { id: "bg_remove", icon: "🖼️", name: "Remove BG", desc: "Remove video background" },
+const TOOL_DEFS = [
+  { id: "subtitles", icon: "💬", nameKey: "tool_subtitles", descKey: "tool_subtitlesDesc" },
+  { id: "revoice", icon: "🎙️", nameKey: "tool_revoice", descKey: "tool_revoiceDesc" },
+  { id: "resize", icon: "📐", nameKey: "tool_resize", descKey: "tool_resizeDesc" },
+  { id: "trim", icon: "✂️", nameKey: "tool_trim", descKey: "tool_trimDesc" },
+  { id: "music", icon: "🎵", nameKey: "tool_music", descKey: "tool_musicDesc" },
+  { id: "speed", icon: "⚡", nameKey: "tool_speed", descKey: "tool_speedDesc" },
+  { id: "filter", icon: "🎨", nameKey: "tool_filter", descKey: "tool_filterDesc" },
+  { id: "flip", icon: "🔄", nameKey: "tool_flip", descKey: "tool_flipDesc" },
+  { id: "watermark", icon: "✏️", nameKey: "tool_watermark", descKey: "tool_watermarkDesc" },
+  { id: "volume", icon: "🔊", nameKey: "tool_volume", descKey: "tool_volumeDesc" },
+  { id: "pitch", icon: "🎛️", nameKey: "tool_pitch", descKey: "tool_pitchDesc" },
+  { id: "overlay", icon: "🖼️", nameKey: "tool_overlay", descKey: "tool_overlayDesc" },
+  { id: "transition", icon: "🔀", nameKey: "tool_transition", descKey: "tool_transitionDesc" },
+  { id: "voicechanger", icon: "🗣️", nameKey: "tool_voicechanger", descKey: "tool_voicechangerDesc" },
+  { id: "watermark_remove", icon: "🧹", nameKey: "tool_watermark_remove", descKey: "tool_watermark_removeDesc" },
+  { id: "bg_remove", icon: "🖼️", nameKey: "tool_bg_remove", descKey: "tool_bg_removeDesc" },
 ];
 
 const PLATFORMS = [
-  { id: "youtube", label: "YouTube (16:9)", ratio: "1920x1080" },
-  { id: "tiktok", label: "TikTok (9:16)", ratio: "1080x1920" },
-  { id: "reels", label: "Reels (9:16)", ratio: "1080x1920" },
-  { id: "shorts", label: "Shorts (9:16)", ratio: "1080x1920" },
-  { id: "square", label: "Square (1:1)", ratio: "1080x1080" },
+  { id: "youtube", labelKey: "ep_youtube", ratio: "1920x1080" },
+  { id: "tiktok", labelKey: "ep_tiktok", ratio: "1080x1920" },
+  { id: "reels", labelKey: "ep_reels", ratio: "1080x1920" },
+  { id: "shorts", labelKey: "ep_shorts", ratio: "1080x1920" },
+  { id: "square", labelKey: "ep_square", ratio: "1080x1080" },
 ];
 
 function VideoEditor() {
+  const t = useI18n();
   const [videoFile, setVideoFile] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
   const [videoSrc, setVideoSrc] = useState(null);
@@ -168,12 +170,12 @@ function VideoEditor() {
       <div className="page-header">
         <div className="page-header-row">
           <div>
-            <h2>Video Editor</h2>
-            <p>Upload or paste a video link to edit with AI-powered tools</p>
+            <h2>{t.videoEditor}</h2>
+            <p>{t.videoEditorDesc}</p>
           </div>
           {videoSrc && (
             <button className="btn btn-secondary" onClick={() => { setVideoSrc(null); setVideoFile(null); setFileName(""); setActiveTool(null); setServerPath(null); setResultUrl(null); setError(null); }}>
-              ← Upload New
+              {t.uploadNew}
             </button>
           )}
         </div>
@@ -195,8 +197,8 @@ function VideoEditor() {
           onClick={() => fileRef.current?.click()}
         >
           <div className="upload-icon">📁</div>
-          <div className="upload-title">Drop your video here or click to browse</div>
-          <div className="upload-subtitle">Supports MP4, MOV, AVI, MKV — up to 2GB</div>
+          <div className="upload-title">{t.dropVideo}</div>
+          <div className="upload-subtitle">{t.dropVideoSub}</div>
 
           <input
             ref={fileRef}
@@ -206,7 +208,7 @@ function VideoEditor() {
             onChange={(e) => handleFile(e.target.files[0])}
           />
 
-          <div className="upload-or">— or paste a video URL —</div>
+          <div className="upload-or">{t.orPasteUrl}</div>
 
           <div className="url-input-row" onClick={(e) => e.stopPropagation()}>
             <input
@@ -215,7 +217,7 @@ function VideoEditor() {
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
             />
-            <button className="btn btn-primary" onClick={handleUrlLoad}>Load</button>
+            <button className="btn btn-primary" onClick={handleUrlLoad}>{t.load}</button>
           </div>
         </div>
       ) : (
@@ -223,7 +225,7 @@ function VideoEditor() {
           {uploading && (
             <div className="card" style={{ textAlign: "center", padding: "20px" }}>
               <div className="spinner" />
-              <p style={{ color: "var(--text-secondary)" }}>Uploading video to server...</p>
+              <p style={{ color: "var(--text-secondary)" }}>{t.uploading}</p>
             </div>
           )}
 
@@ -232,12 +234,12 @@ function VideoEditor() {
             <div className="editor-preview">
               <video src={resultUrl || videoSrc} controls style={{ width: "100%", maxHeight: 380, borderRadius: 12, background: "#000" }} />
               <div className="editor-filename">
-                {resultUrl ? "✅ Transformed output" : fileName}
+                {resultUrl ? t.transformedOutput : fileName}
               </div>
             </div>
             {resultUrl && (
               <div style={{ textAlign: "center", marginTop: 10 }}>
-                <a href={resultUrl} download className="btn btn-primary">⬇️ Download Result</a>
+                <a href={resultUrl} download className="btn btn-primary">{t.downloadResult}</a>
               </div>
             )}
           </div>
@@ -256,17 +258,17 @@ function VideoEditor() {
           {/* Tools Grid */}
           {!processing && (
             <div className="card">
-              <div className="card-title"><span>🛠️</span> Editing Tools</div>
+              <div className="card-title"><span>🛠️</span> {t.editingTools}</div>
               <div className="editor-tools-grid">
-                {TOOLS.map((tool) => (
+                {TOOL_DEFS.map((tool) => (
                   <button
                     key={tool.id}
                     className={`editor-tool-card ${activeTool === tool.id ? "active" : ""}`}
                     onClick={() => setActiveTool(tool.id === activeTool ? null : tool.id)}
                   >
                     <div className="tool-icon">{tool.icon}</div>
-                    <div className="tool-name">{tool.name}</div>
-                    <div className="tool-desc">{tool.desc}</div>
+                    <div className="tool-name">{t[tool.nameKey]}</div>
+                    <div className="tool-desc">{t[tool.descKey]}</div>
                   </button>
                 ))}
               </div>
@@ -277,13 +279,13 @@ function VideoEditor() {
           {activeTool && !processing && (
             <div className="card glow">
               <div className="card-title">
-                <span>{TOOLS.find(t => t.id === activeTool)?.icon}</span>
-                {TOOLS.find(t => t.id === activeTool)?.name} Settings
+                <span>{TOOL_DEFS.find(tl => tl.id === activeTool)?.icon}</span>
+                {t[TOOL_DEFS.find(tl => tl.id === activeTool)?.nameKey]} — {t.toolSettings}
               </div>
 
               {activeTool === "resize" && (
                 <div className="form-group">
-                  <label className="form-label">Target Platform</label>
+                  <label className="form-label">{t.targetPlatform}</label>
                   <div className="option-grid">
                     {PLATFORMS.map((p) => (
                       <button
@@ -291,7 +293,7 @@ function VideoEditor() {
                         className={`option-button ${platform === p.id ? "active" : ""}`}
                         onClick={() => setPlatform(p.id)}
                       >
-                        {p.label}
+                        {t[p.labelKey]}
                       </button>
                     ))}
                   </div>
@@ -300,37 +302,36 @@ function VideoEditor() {
 
               {activeTool === "subtitles" && (
                 <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
-                  AI will burn subtitles directly into the video.
-                  Style: white text with black outline, bottom-centered.
+                  {t.subtitlesHint}
                 </p>
               )}
 
               {activeTool === "revoice" && (
                 <div className="form-group">
-                  <label className="form-label">New Voice</label>
+                  <label className="form-label">{t.newVoice}</label>
                   <select className="select-input" value={revoiceVoice} onChange={(e) => setRevoiceVoice(e.target.value)}>
-                    <option value="male_deep">Male (Deep)</option>
-                    <option value="male_warm">Male (Warm)</option>
-                    <option value="female_warm">Female (Warm)</option>
-                    <option value="female_bright">Female (Bright)</option>
-                    <option value="storyteller">Storyteller</option>
+                    <option value="male_deep">{t.v_male_deep}</option>
+                    <option value="male_warm">{t.v_male_warm}</option>
+                    <option value="female_warm">{t.v_female_warm}</option>
+                    <option value="female_bright">{t.v_female_bright}</option>
+                    <option value="storyteller">{t.v_storyteller}</option>
                   </select>
                   <p style={{ color: "var(--text-secondary)", fontSize: 11, marginTop: 6 }}>
-                    AI will re-generate voiceover with the selected voice style.
+                    {t.revoiceHint}
                   </p>
                 </div>
               )}
 
               {activeTool === "speed" && (
                 <div className="form-group">
-                  <label className="form-label">Playback Speed</label>
+                  <label className="form-label">{t.playbackSpeed}</label>
                   <select className="select-input" value={speedValue} onChange={(e) => setSpeedValue(e.target.value)}>
-                    <option value="0.5">0.5x (Slow)</option>
-                    <option value="0.75">0.75x</option>
-                    <option value="1">1x (Normal)</option>
-                    <option value="1.25">1.25x</option>
-                    <option value="1.5">1.5x</option>
-                    <option value="2">2x (Fast)</option>
+                    <option value="0.5">{t.sp_05}</option>
+                    <option value="0.75">{t.sp_075}</option>
+                    <option value="1">{t.sp_1}</option>
+                    <option value="1.25">{t.sp_125}</option>
+                    <option value="1.5">{t.sp_15}</option>
+                    <option value="2">{t.sp_2}</option>
                   </select>
                 </div>
               )}
@@ -338,19 +339,19 @@ function VideoEditor() {
               {activeTool === "filter" && (
                 <div className="option-grid">
                   {[
-                    { id: "cinematic", label: "Cinematic" },
-                    { id: "warm", label: "Warm" },
-                    { id: "cool", label: "Cool" },
-                    { id: "bw", label: "B&W" },
-                    { id: "vintage", label: "Vintage" },
-                    { id: "high_contrast", label: "High Contrast" },
+                    { id: "cinematic", labelKey: "f_cinematic" },
+                    { id: "warm", labelKey: "f_warm" },
+                    { id: "cool", labelKey: "f_cool" },
+                    { id: "bw", labelKey: "f_bw" },
+                    { id: "vintage", labelKey: "f_vintage" },
+                    { id: "high_contrast", labelKey: "f_highContrast" },
                   ].map((f) => (
                     <button
                       key={f.id}
                       className={`option-button ${filterValue === f.id ? "active" : ""}`}
                       onClick={() => setFilterValue(f.id)}
                     >
-                      {f.label}
+                      {t[f.labelKey]}
                     </button>
                   ))}
                 </div>
@@ -358,19 +359,19 @@ function VideoEditor() {
 
               {activeTool === "watermark" && (
                 <div className="form-group">
-                  <label className="form-label">Text Content</label>
-                  <input className="text-input" placeholder="Your text here..." value={watermarkText} onChange={(e) => setWatermarkText(e.target.value)} />
+                  <label className="form-label">{t.textContent}</label>
+                  <input className="text-input" placeholder={t.textContentPlaceholder} value={watermarkText} onChange={(e) => setWatermarkText(e.target.value)} />
                 </div>
               )}
 
               {activeTool === "trim" && (
                 <div className="options-row">
                   <div className="form-group">
-                    <label className="form-label">Start Time (seconds)</label>
+                    <label className="form-label">{t.startTime}</label>
                     <input className="text-input" type="number" placeholder="0" min="0" value={trimStart} onChange={(e) => setTrimStart(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">End Time (seconds)</label>
+                    <label className="form-label">{t.endTime}</label>
                     <input className="text-input" type="number" placeholder="30" min="0" value={trimEnd} onChange={(e) => setTrimEnd(e.target.value)} />
                   </div>
                 </div>
@@ -378,7 +379,7 @@ function VideoEditor() {
 
               {activeTool === "volume" && (
                 <div className="form-group">
-                  <label className="form-label">Volume Level</label>
+                  <label className="form-label">{t.volumeLevel}</label>
                   <input type="range" min="0" max="3" step="0.1" value={volumeValue} onChange={(e) => setVolumeValue(e.target.value)} className="range-input" />
                   <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 6, textAlign: "center" }}>{(volumeValue * 100).toFixed(0)}%</div>
                 </div>
@@ -386,7 +387,7 @@ function VideoEditor() {
 
               {activeTool === "pitch" && (
                 <div className="form-group">
-                  <label className="form-label">Pitch Adjustment</label>
+                  <label className="form-label">{t.pitchAdjustment}</label>
                   <input type="range" min="0.5" max="2" step="0.1" value={pitchValue} onChange={(e) => setPitchValue(e.target.value)} className="range-input" />
                   <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 6, textAlign: "center" }}>{pitchValue}x</div>
                 </div>
@@ -395,15 +396,15 @@ function VideoEditor() {
               {activeTool === "transition" && (
                 <div className="option-grid">
                   {[
-                    { id: "fade", label: "Fade" },
-                    { id: "dissolve", label: "Dissolve" },
-                    { id: "wipe", label: "Wipe" },
-                    { id: "slide", label: "Slide" },
-                    { id: "zoom", label: "Zoom" },
-                    { id: "blur", label: "Blur" },
-                  ].map((t) => (
-                    <button key={t.id} className={`option-button ${transitionType === t.id ? "active" : ""}`} onClick={() => setTransitionType(t.id)}>
-                      {t.label}
+                    { id: "fade", labelKey: "tr_fade" },
+                    { id: "dissolve", labelKey: "tr_dissolve" },
+                    { id: "wipe", labelKey: "tr_wipe" },
+                    { id: "slide", labelKey: "tr_slide" },
+                    { id: "zoom", labelKey: "tr_zoom" },
+                    { id: "blur", labelKey: "tr_blur" },
+                  ].map((tr) => (
+                    <button key={tr.id} className={`option-button ${transitionType === tr.id ? "active" : ""}`} onClick={() => setTransitionType(tr.id)}>
+                      {t[tr.labelKey]}
                     </button>
                   ))}
                 </div>
@@ -412,15 +413,15 @@ function VideoEditor() {
               {activeTool === "voicechanger" && (
                 <div className="option-grid">
                   {[
-                    { id: "deep", label: "🔊 Deep" },
-                    { id: "high", label: "🎵 High Pitch" },
-                    { id: "robot", label: "🤖 Robot" },
-                    { id: "echo", label: "🏔️ Echo" },
-                    { id: "whisper", label: "🤫 Whisper" },
-                    { id: "radio", label: "📻 Radio" },
+                    { id: "deep", labelKey: "vc_deep" },
+                    { id: "high", labelKey: "vc_high" },
+                    { id: "robot", labelKey: "vc_robot" },
+                    { id: "echo", labelKey: "vc_echo" },
+                    { id: "whisper", labelKey: "vc_whisper" },
+                    { id: "radio", labelKey: "vc_radio" },
                   ].map((v) => (
                     <button key={v.id} className={`option-button ${voiceEffect === v.id ? "active" : ""}`} onClick={() => setVoiceEffect(v.id)}>
-                      {v.label}
+                      {t[v.labelKey]}
                     </button>
                   ))}
                 </div>
@@ -428,37 +429,37 @@ function VideoEditor() {
 
               {activeTool === "overlay" && (
                 <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
-                  Upload an image to overlay on your video. The overlay will be centered and semi-transparent.
+                  {t.overlayHint}
                 </p>
               )}
 
               {activeTool === "music" && (
                 <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
-                  A royalty-free background music track will be mixed into your video at a lower volume behind the original audio.
+                  {t.musicHint}
                 </p>
               )}
 
               {activeTool === "flip" && (
                 <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
-                  The video will be flipped horizontally (mirrored), useful for copyright safety or visual variety.
+                  {t.flipHint}
                 </p>
               )}
 
               {activeTool === "watermark_remove" && (
                 <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
-                  AI will attempt to detect and remove watermarks from the video. Works best with small, static watermarks.
+                  {t.watermarkRemoveHint}
                 </p>
               )}
 
               {activeTool === "bg_remove" && (
                 <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
-                  AI will remove the background from the video, keeping only the main subject. Best for videos with a single subject.
+                  {t.bgRemoveHint}
                 </p>
               )}
 
               <div style={{ marginTop: 16 }}>
                 <button className="btn btn-primary btn-lg" onClick={handleApplyTool} disabled={processing || uploading || !serverPath}>
-                  {uploading ? "Uploading..." : processing ? "Processing..." : `Apply ${TOOLS.find(t => t.id === activeTool)?.name}`}
+                  {uploading ? t.loading : processing ? t.loading : `${t.apply} ${t[TOOL_DEFS.find(tl => tl.id === activeTool)?.nameKey]}`}
                 </button>
               </div>
             </div>

@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { cloneVoice, getClonedVoices, deleteClonedVoice, previewVoice } from "../api/client.js";
+import { useI18n } from "../utils/i18n.js";
 
 function VoiceCloning() {
+  const t = useI18n();
   const [audioFile, setAudioFile] = useState(null);
   const [audioSrc, setAudioSrc] = useState(null);
   const [fileName, setFileName] = useState("");
@@ -125,8 +127,8 @@ function VoiceCloning() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h2>AI Voice Cloning 🧬</h2>
-        <p>Clone your voice from a 30-second sample and use it in all your videos</p>
+        <h2>{t.voiceCloneTitle}</h2>
+        <p>{t.voiceCloneDesc}</p>
       </div>
 
       {error && (
@@ -139,7 +141,7 @@ function VoiceCloning() {
 
       <div className="card glow">
         <div className="card-title">
-          <span>🎤</span> Voice Sample
+          <span>🎤</span> {t.voiceSample}
           <span className="badge" style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: "var(--gradient-accent)", color: "white", fontWeight: 700, marginLeft: 8 }}>PRO</span>
         </div>
 
@@ -155,12 +157,12 @@ function VoiceCloning() {
             >
               <div className="upload-icon">🎙️</div>
               <div className="upload-title">
-                {isRecording ? `Recording... ${recordingTime}s` : "Upload a voice sample"}
+                {isRecording ? `Recording... ${recordingTime}s` : t.uploadVoice}
               </div>
               <div className="upload-subtitle">
-                {isRecording
-                  ? "Speak clearly for at least 30 seconds"
-                  : "MP3, WAV, or M4A — at least 30 seconds of clear speech"}
+                  {isRecording
+                  ? t.speakClearly
+                  : t.voiceSampleSub}
               </div>
               <input
                 ref={fileRef}
@@ -173,11 +175,11 @@ function VoiceCloning() {
             <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
               {!isRecording ? (
                 <button className="btn btn-accent btn-lg" onClick={startRecording}>
-                  🎤 Record Voice Sample
+                  {t.recordVoice}
                 </button>
               ) : (
                 <button className="btn btn-lg" onClick={stopRecording} style={{ background: "var(--error)", color: "white", border: "none" }}>
-                  ⏹️ Stop Recording ({recordingTime}s)
+                  {t.stopRecording} ({recordingTime}s)
                 </button>
               )}
             </div>
@@ -192,10 +194,10 @@ function VoiceCloning() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Voice Clone Name</label>
+              <label className="form-label">{t.cloneName}</label>
               <input
                 className="text-input"
-                placeholder="e.g. My Voice, Studio Voice, Deep Narrator..."
+                placeholder={t.cloneNamePlaceholder}
                 value={cloneName}
                 onChange={(e) => setCloneName(e.target.value)}
               />
@@ -203,23 +205,23 @@ function VoiceCloning() {
 
             <div className="options-row" style={{ marginBottom: 16 }}>
               <div className="form-group">
-                <label className="form-label">Voice Gender</label>
+                <label className="form-label">{t.voiceGender}</label>
                 <select className="select-input" value={gender} onChange={(e) => setGender(e.target.value)}>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="male">{t.male}</option>
+                  <option value="female">{t.female}</option>
                 </select>
               </div>
               <div className="form-group">
-                <label className="form-label">Voice Style</label>
+                <label className="form-label">{t.voiceStyleLabel}</label>
                 <select className="select-input" value={style} onChange={(e) => setStyle(e.target.value)}>
-                  <option value="warm">Warm</option>
-                  <option value="deep">Deep</option>
-                  <option value="narrator">Narrator</option>
-                  <option value="casual">Casual</option>
-                  <option value="neutral">Neutral</option>
-                  <option value="bright">Bright</option>
-                  <option value="confident">Confident</option>
-                  <option value="cheerful">Cheerful</option>
+                  <option value="warm">{t.warm}</option>
+                  <option value="deep">{t.deep}</option>
+                  <option value="narrator">{t.narrator}</option>
+                  <option value="casual">{t.casual}</option>
+                  <option value="neutral">{t.neutral}</option>
+                  <option value="bright">{t.bright}</option>
+                  <option value="confident">{t.confident}</option>
+                  <option value="cheerful">{t.cheerful}</option>
                 </select>
               </div>
             </div>
@@ -231,13 +233,13 @@ function VoiceCloning() {
                 disabled={processing || !cloneName.trim()}
                 style={{ flex: 1 }}
               >
-                {processing ? "🧬 Cloning Voice..." : "🧬 Clone This Voice"}
+                {processing ? t.cloningVoice : t.cloneThisVoice}
               </button>
               <button
                 className="btn btn-secondary"
                 onClick={() => { setAudioFile(null); setAudioSrc(null); setFileName(""); setError(null); }}
               >
-                ← Re-record
+                {t.reRecord}
               </button>
             </div>
           </>
@@ -246,12 +248,12 @@ function VoiceCloning() {
 
       <div className="card">
         <div className="card-title">
-          <span>🗣️</span> Your Cloned Voices
+          <span>🗣️</span> {t.yourClonedVoices}
         </div>
         {clonedVoices.length === 0 ? (
           <div style={{ textAlign: "center", padding: "24px 0", color: "var(--text-muted)" }}>
             <div style={{ fontSize: 36, marginBottom: 8 }}>🧬</div>
-            <p>No cloned voices yet. Upload a sample above to get started!</p>
+            <p>{t.noClonedVoices}</p>
           </div>
         ) : (
           <div className="cloned-voices-list">
@@ -273,7 +275,7 @@ function VoiceCloning() {
                     onClick={() => handlePreview(v.id)}
                     disabled={previewPlaying === v.id}
                   >
-                    {previewPlaying === v.id ? "🔊 Playing..." : "▶️ Preview"}
+                    {previewPlaying === v.id ? t.playing : t.preview}
                   </button>
                   <button
                     className="btn"
@@ -282,7 +284,7 @@ function VoiceCloning() {
                   >
                     🗑️
                   </button>
-                  <div className="voice-status ready">✅ Ready</div>
+                  <div className="voice-status ready">✅ {t.ready}</div>
                 </div>
               </div>
             ))}
@@ -290,35 +292,35 @@ function VoiceCloning() {
         )}
         {clonedVoices.length > 0 && (
           <div style={{ marginTop: 12, padding: 12, background: "rgba(139, 92, 246, 0.1)", borderRadius: 8, fontSize: 13 }}>
-            💡 <strong>Tip:</strong> Your cloned voices appear in the voice dropdown when creating a new video. Select one to narrate with your custom voice!
+            💡 <strong>{t.voiceTip}</strong>
           </div>
         )}
       </div>
 
       <div className="card">
         <div className="card-title">
-          <span>💡</span> How Voice Cloning Works
+          <span>💡</span> {t.howVoiceCloningWorks}
         </div>
         <div className="how-it-works">
           <div className="how-step">
             <div className="how-step-num">1</div>
             <div>
-              <h4>Record or Upload</h4>
-              <p>Provide at least 30 seconds of clear speech in a quiet environment</p>
+              <h4>{t.howStep1Title}</h4>
+              <p>{t.howStep1Desc}</p>
             </div>
           </div>
           <div className="how-step">
             <div className="how-step-num">2</div>
             <div>
-              <h4>AI Analyzes</h4>
-              <p>Our AI extracts your voice characteristics and matches the best synthesis profile</p>
+              <h4>{t.howStep2Title}</h4>
+              <p>{t.howStep2Desc}</p>
             </div>
           </div>
           <div className="how-step">
             <div className="how-step-num">3</div>
             <div>
-              <h4>Use Everywhere</h4>
-              <p>Select your cloned voice when creating videos — it appears alongside the default voices</p>
+              <h4>{t.howStep3Title}</h4>
+              <p>{t.howStep3Desc}</p>
             </div>
           </div>
         </div>

@@ -1,61 +1,62 @@
 import { useState, useEffect } from "react";
 import { getStoryIdeas, getLanguages, getClonedVoices } from "../api/client.js";
+import { useI18n } from "../utils/i18n.js";
 
 const CONTENT_TYPES = [
-  { id: "story", label: "📖 Story / Narrative" },
-  { id: "educational", label: "🎓 Educational" },
-  { id: "tutorial", label: "📐 Tutorial / How-To" },
-  { id: "product", label: "🛍️ Product Promo" },
-  { id: "news", label: "📰 News / Explainer" },
-  { id: "social", label: "📱 Social Media" },
-  { id: "vlog", label: "🎤 Vlog Style" },
-  { id: "meditation", label: "🧘 Meditation / ASMR" },
+  { id: "story", labelKey: "ct_story" },
+  { id: "educational", labelKey: "ct_educational" },
+  { id: "tutorial", labelKey: "ct_tutorial" },
+  { id: "product", labelKey: "ct_productPromo" },
+  { id: "news", labelKey: "ct_news" },
+  { id: "social", labelKey: "ct_social" },
+  { id: "vlog", labelKey: "ct_vlog" },
+  { id: "meditation", labelKey: "ct_meditation" },
 ];
 
 const GENRES = [
-  { id: "cinematic", label: "🎥 Cinematic" },
-  { id: "horror", label: "👻 Horror" },
-  { id: "romance", label: "❤️ Romance" },
-  { id: "documentary", label: "🎞️ Documentary" },
-  { id: "motivational", label: "🔥 Motivational" },
-  { id: "comedy", label: "😂 Comedy" },
-  { id: "scifi", label: "🚀 Sci-Fi" },
-  { id: "thriller", label: "🔪 Thriller" },
-  { id: "fantasy", label: "🧙 Fantasy" },
-  { id: "action", label: "💥 Action" },
+  { id: "cinematic", labelKey: "g_cinematic" },
+  { id: "horror", labelKey: "g_horror" },
+  { id: "romance", labelKey: "g_romance" },
+  { id: "documentary", labelKey: "g_documentary" },
+  { id: "motivational", labelKey: "g_motivational" },
+  { id: "comedy", labelKey: "g_comedy" },
+  { id: "scifi", labelKey: "g_scifi" },
+  { id: "thriller", labelKey: "g_thriller" },
+  { id: "fantasy", labelKey: "g_fantasy" },
+  { id: "action", labelKey: "g_action" },
 ];
 
 const VOICES = [
-  { id: "storyteller", label: "Storyteller" },
-  { id: "male_deep", label: "Male (Deep)" },
-  { id: "male_warm", label: "Male (Warm)" },
-  { id: "male_casual", label: "Male (Casual)" },
-  { id: "male_narrator", label: "Male (Narrator)" },
-  { id: "female_warm", label: "Female (Warm)" },
-  { id: "female_bright", label: "Female (Bright)" },
-  { id: "female_confident", label: "Female (Confident)" },
-  { id: "female_cheerful", label: "Female (Cheerful)" },
-  { id: "neutral", label: "Neutral" },
+  { id: "storyteller", labelKey: "v_storyteller" },
+  { id: "male_deep", labelKey: "v_male_deep" },
+  { id: "male_warm", labelKey: "v_male_warm" },
+  { id: "male_casual", labelKey: "v_male_casual" },
+  { id: "male_narrator", labelKey: "v_male_narrator" },
+  { id: "female_warm", labelKey: "v_female_warm" },
+  { id: "female_bright", labelKey: "v_female_bright" },
+  { id: "female_confident", labelKey: "v_female_confident" },
+  { id: "female_cheerful", labelKey: "v_female_cheerful" },
+  { id: "neutral", labelKey: "v_neutral" },
 ];
 
 const DURATIONS = [
-  { id: 1, label: "~1 min (Short)" },
-  { id: 2, label: "~2 min" },
-  { id: 3, label: "~3 min" },
-  { id: 5, label: "~5 min" },
-  { id: 10, label: "~10 min" },
-  { id: 15, label: "~15 min" },
-  { id: 30, label: "~30 min" },
-  { id: 60, label: "~60 min (Long)" },
+  { id: 1, labelKey: "d_1min" },
+  { id: 2, labelKey: "d_2min" },
+  { id: 3, labelKey: "d_3min" },
+  { id: 5, labelKey: "d_5min" },
+  { id: 10, labelKey: "d_10min" },
+  { id: 15, labelKey: "d_15min" },
+  { id: 30, labelKey: "d_30min" },
+  { id: 60, labelKey: "d_60min" },
 ];
 
 const MUSIC_MOODS = [
-  { id: "", label: "None" },
-  { id: "calm", label: "🎵 Calm" },
-  { id: "epic", label: "🎵 Epic" },
-  { id: "dark", label: "🎵 Dark" },
-  { id: "upbeat", label: "🎵 Upbeat" },
-  { id: "romantic", label: "🎵 Romantic" },
+  { id: "", labelKey: "m_none" },
+  { id: "calm", labelKey: "m_calm" },
+  { id: "epic", labelKey: "m_epic" },
+  { id: "dark", labelKey: "m_dark" },
+  { id: "upbeat", labelKey: "m_upbeat" },
+  { id: "romantic", labelKey: "m_romantic" },
 ];
 
 const LANGUAGES = [
@@ -83,13 +84,14 @@ const LANGUAGES = [
 ];
 
 const PLATFORMS = [
-  { id: "landscape", label: "🖥️ YouTube (16:9)", ratio: "16:9" },
-  { id: "portrait", label: "📱 TikTok / Reels (9:16)", ratio: "9:16" },
-  { id: "square", label: "⬛ Instagram Post (1:1)", ratio: "1:1" },
-  { id: "classic", label: "🎬 Cinema (21:9)", ratio: "21:9" },
+  { id: "landscape", labelKey: "p_youtube", ratio: "16:9" },
+  { id: "portrait", labelKey: "p_tiktok", ratio: "9:16" },
+  { id: "square", labelKey: "p_instagram", ratio: "1:1" },
+  { id: "classic", labelKey: "p_cinema", ratio: "21:9" },
 ];
 
 function CreateVideo({ onGenerate, error }) {
+  const t = useI18n();
   const [storyIdea, setStoryIdea] = useState("");
   const [contentType, setContentType] = useState("story");
   const [genre, setGenre] = useState("cinematic");
@@ -149,8 +151,8 @@ function CreateVideo({ onGenerate, error }) {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h2>Create AI Video</h2>
-        <p>Turn any idea into a professional video — stories, tutorials, promos, and more</p>
+        <h2>{t.createVideoTitle}</h2>
+        <p>{t.createVideoDesc}</p>
       </div>
 
       {error && (
@@ -162,15 +164,15 @@ function CreateVideo({ onGenerate, error }) {
 
       {/* Content Type */}
       <div className="card">
-        <div className="card-title"><span>🎯</span> Content Type</div>
+        <div className="card-title"><span>🎯</span> {t.contentType}</div>
         <div className="option-grid">
-          {CONTENT_TYPES.map((t) => (
+          {CONTENT_TYPES.map((ct) => (
             <button
-              key={t.id}
-              className={`option-button ${contentType === t.id ? "active" : ""}`}
-              onClick={() => setContentType(t.id)}
+              key={ct.id}
+              className={`option-button ${contentType === ct.id ? "active" : ""}`}
+              onClick={() => setContentType(ct.id)}
             >
-              {t.label}
+              {t[ct.labelKey]}
             </button>
           ))}
         </div>
@@ -179,18 +181,18 @@ function CreateVideo({ onGenerate, error }) {
       {/* Story Input */}
       <div className="card">
         <div className="card-title">
-          <span>✍️</span> {contentType === "story" ? "Story Idea" : "Video Description"}
+          <span>✍️</span> {contentType === "story" ? t.storyIdea : t.videoDescription}
         </div>
         <div className="form-group">
           <textarea
             className="textarea-input"
             placeholder={contentType === "story"
-              ? "Describe your story idea in detail...\n\nExample: A lonely astronaut discovers a mysterious signal from a dead planet."
+              ? t.storyPlaceholder
               : contentType === "tutorial"
-              ? "Describe what you want to teach...\n\nExample: How to build a simple website using HTML & CSS in 5 minutes."
+              ? t.tutorialPlaceholder
               : contentType === "product"
-              ? "Describe your product or service...\n\nExample: Our new wireless earbuds combine premium audio with 36-hour battery life."
-              : "Describe your video idea in detail...\n\nExample: Top 10 fascinating facts about the deep ocean that will blow your mind."}
+              ? t.productPlaceholder
+              : t.defaultPlaceholder}
             value={storyIdea}
             onChange={(e) => setStoryIdea(e.target.value)}
             maxLength={5000}
@@ -204,7 +206,7 @@ function CreateVideo({ onGenerate, error }) {
           disabled={loadingIdeas}
           type="button"
         >
-          {loadingIdeas ? "Generating ideas..." : "✨ Give Me Story Ideas"}
+          {loadingIdeas ? t.generatingIdeas : t.giveMeIdeas}
         </button>
 
         {ideas.length > 0 && (
@@ -222,8 +224,8 @@ function CreateVideo({ onGenerate, error }) {
                 <div className="idea-text">{idea.idea || idea.description}</div>
                 {idea.tags && (
                   <div className="idea-tags">
-                    {idea.tags.map((t, j) => (
-                      <span key={j} className="idea-tag">#{t}</span>
+                    {idea.tags.map((tag, j) => (
+                      <span key={j} className="idea-tag">#{tag}</span>
                     ))}
                   </div>
                 )}
@@ -235,7 +237,7 @@ function CreateVideo({ onGenerate, error }) {
 
       {/* Genre */}
       <div className="card">
-        <div className="card-title"><span>🎭</span> Genre</div>
+        <div className="card-title"><span>🎭</span> {t.genre}</div>
         <div className="option-grid">
           {GENRES.map((g) => (
             <button
@@ -243,7 +245,7 @@ function CreateVideo({ onGenerate, error }) {
               className={`option-button ${genre === g.id ? "active" : ""}`}
               onClick={() => setGenre(g.id)}
             >
-              {g.label}
+              {t[g.labelKey]}
             </button>
           ))}
         </div>
@@ -251,7 +253,7 @@ function CreateVideo({ onGenerate, error }) {
 
       {/* Platform / Aspect Ratio */}
       <div className="card">
-        <div className="card-title"><span>📐</span> Platform / Size</div>
+        <div className="card-title"><span>📐</span> {t.platformSize}</div>
         <div className="option-grid">
           {PLATFORMS.map((p) => (
             <button
@@ -259,7 +261,7 @@ function CreateVideo({ onGenerate, error }) {
               className={`option-button ${platform === p.id ? "active" : ""}`}
               onClick={() => setPlatform(p.id)}
             >
-              {p.label}
+              {t[p.labelKey]}
             </button>
           ))}
         </div>
@@ -267,60 +269,60 @@ function CreateVideo({ onGenerate, error }) {
 
       {/* Settings */}
       <div className="card">
-        <div className="card-title"><span>⚙️</span> Settings</div>
+        <div className="card-title"><span>⚙️</span> {t.settingsTitle}</div>
 
         <div className="options-row">
           <div className="form-group">
-            <label className="form-label">Voice Style</label>
+            <label className="form-label">{t.voiceStyle}</label>
             <select className="select-input" value={voiceStyle} onChange={(e) => setVoiceStyle(e.target.value)}>
-              {VOICES.map((v) => <option key={v.id} value={v.id}>{v.label}</option>)}
-              {clonedVoices.length > 0 && <option disabled>── Cloned Voices ──</option>}
+              {VOICES.map((v) => <option key={v.id} value={v.id}>{t[v.labelKey]}</option>)}
+              {clonedVoices.length > 0 && <option disabled>{t.clonedVoices}</option>}
               {clonedVoices.map((v) => <option key={v.id} value={v.id}>🧬 {v.name}</option>)}
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label">Resolution</label>
+            <label className="form-label">{t.resolution}</label>
             <select className="select-input" value={resolution} onChange={(e) => setResolution(e.target.value)}>
-              <option value="720p">720p (Faster)</option>
-              <option value="1080p">1080p (Higher Quality)</option>
-              <option value="4k">4K Ultra HD 💎</option>
+              <option value="720p">{t.r_720} {t.r_720desc}</option>
+              <option value="1080p">{t.r_1080} {t.r_1080desc}</option>
+              <option value="4k">{t.r_4k}</option>
             </select>
           </div>
         </div>
 
         <div className="options-row">
           <div className="form-group">
-            <label className="form-label">Video Duration</label>
+            <label className="form-label">{t.videoDuration}</label>
             <select className="select-input" value={targetDuration} onChange={(e) => setTargetDuration(Number(e.target.value))}>
-              {DURATIONS.map((d) => <option key={d.id} value={d.id}>{d.label}</option>)}
+              {DURATIONS.map((d) => <option key={d.id} value={d.id}>{t[d.labelKey]}</option>)}
             </select>
             <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>
-              ~{estimatedScenes} scenes will be generated
+              ~{estimatedScenes} {t.scenesGenerated}
             </div>
           </div>
           <div className="form-group">
-            <label className="form-label">Background Music</label>
+            <label className="form-label">{t.backgroundMusic}</label>
             <select className="select-input" value={musicMood} onChange={(e) => setMusicMood(e.target.value)}>
-              {MUSIC_MOODS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+              {MUSIC_MOODS.map((m) => <option key={m.id} value={m.id}>{t[m.labelKey]}</option>)}
             </select>
           </div>
         </div>
 
         <div className="options-row">
           <div className="form-group">
-            <label className="form-label">🌐 Language</label>
+            <label className="form-label">🌐 {t.language}</label>
             <select className="select-input" value={language} onChange={(e) => setLanguage(e.target.value)}>
               {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label">🚀 Priority Rendering</label>
+            <label className="form-label">🚀 {t.priorityRendering}</label>
             <button
               className={`option-button ${priorityRender ? "active" : ""}`}
               onClick={() => setPriorityRender(!priorityRender)}
               style={{ width: "100%" }}
             >
-              {priorityRender ? "⚡ Priority ON — 5x Faster" : "Standard Queue"}
+              {priorityRender ? t.priorityOn : t.standardQueue}
             </button>
           </div>
         </div>
@@ -331,7 +333,7 @@ function CreateVideo({ onGenerate, error }) {
         onClick={handleSubmit}
         disabled={loading || storyIdea.trim().length < 10}
       >
-        {loading ? <>Generating...</> : <>🎬 Generate Video</>}
+        {loading ? <>{t.generating}</> : <>{t.generateVideo}</>}
       </button>
 
       <div style={{ height: 24 }} />

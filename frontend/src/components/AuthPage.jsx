@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { supabase } from "../utils/supabase.js";
+import { useI18n } from "../utils/i18n.js";
+import Logo from "./Logo.jsx";
 
 function AuthPage({ onAuth }) {
+  const t = useI18n();
   const [mode, setMode] = useState("login"); // login | signup | consent
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -84,9 +87,9 @@ function AuthPage({ onAuth }) {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-logo">🎬</div>
-          <h1>StoryForge AI</h1>
-          <p>Video Generator Studio</p>
+          <div className="auth-logo"><Logo size={56} /></div>
+          <h1>PM Studio</h1>
+          <p>AI Video Generator</p>
         </div>
 
         {message && <div className="auth-message">{message}</div>}
@@ -94,10 +97,10 @@ function AuthPage({ onAuth }) {
 
         {mode === "login" && (
           <form onSubmit={handleLogin} className="auth-form">
-            <h2>Welcome Back</h2>
+            <h2>{t.welcomeBack}</h2>
 
             <div className="auth-field">
-              <label>Email</label>
+              <label>{t.email}</label>
               <input
                 type="email"
                 value={email}
@@ -109,7 +112,7 @@ function AuthPage({ onAuth }) {
             </div>
 
             <div className="auth-field">
-              <label>Password</label>
+              <label>{t.password}</label>
               <input
                 type="password"
                 value={password}
@@ -121,11 +124,11 @@ function AuthPage({ onAuth }) {
             </div>
 
             <button type="submit" className="auth-btn primary" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? t.loading : t.signIn}
             </button>
 
             <div className="auth-divider">
-              <span>or continue with</span>
+              <span>{t.orContinueWith}</span>
             </div>
 
             <div className="auth-oauth-row">
@@ -140,9 +143,9 @@ function AuthPage({ onAuth }) {
             </div>
 
             <p className="auth-switch">
-              Don't have an account?{" "}
+              {t.noAccount}{" "}
               <button type="button" onClick={() => { setMode("signup"); setError(null); }}>
-                Sign Up
+                {t.signUp}
               </button>
             </p>
           </form>
@@ -150,10 +153,10 @@ function AuthPage({ onAuth }) {
 
         {mode === "signup" && (
           <form onSubmit={handleSignup} className="auth-form">
-            <h2>Create Account</h2>
+            <h2>{t.createAccount}</h2>
 
             <div className="auth-field">
-              <label>Full Name</label>
+              <label>{t.fullName}</label>
               <input
                 type="text"
                 value={fullName}
@@ -164,7 +167,7 @@ function AuthPage({ onAuth }) {
             </div>
 
             <div className="auth-field">
-              <label>Email</label>
+              <label>{t.email}</label>
               <input
                 type="email"
                 value={email}
@@ -176,7 +179,7 @@ function AuthPage({ onAuth }) {
             </div>
 
             <div className="auth-field">
-              <label>Password</label>
+              <label>{t.password}</label>
               <input
                 type="password"
                 value={password}
@@ -188,7 +191,7 @@ function AuthPage({ onAuth }) {
             </div>
 
             <div className="auth-field">
-              <label>Confirm Password</label>
+              <label>{t.confirmPassword}</label>
               <input
                 type="password"
                 value={confirmPassword}
@@ -200,11 +203,11 @@ function AuthPage({ onAuth }) {
             </div>
 
             <button type="submit" className="auth-btn primary" disabled={loading}>
-              {loading ? "Creating account..." : "Create Account"}
+              {loading ? t.loading : t.createAccount}
             </button>
 
             <div className="auth-divider">
-              <span>or continue with</span>
+              <span>{t.orContinueWith}</span>
             </div>
 
             <div className="auth-oauth-row">
@@ -219,9 +222,9 @@ function AuthPage({ onAuth }) {
             </div>
 
             <p className="auth-switch">
-              Already have an account?{" "}
+              {t.haveAccount}{" "}
               <button type="button" onClick={() => { setMode("login"); setError(null); }}>
-                Sign In
+                {t.signIn}
               </button>
             </p>
           </form>

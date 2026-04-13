@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { io } from "socket.io-client";
 import { supabase } from "./utils/supabase.js";
+import { I18nContext, getTranslation } from "./utils/i18n.js";
 import Sidebar from "./components/Sidebar.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import CreateVideo from "./components/CreateVideo.jsx";
@@ -14,10 +15,10 @@ import VoiceCloning from "./components/VoiceCloning.jsx";
 import AuthPage from "./components/AuthPage.jsx";
 import Settings from "./components/Settings.jsx";
 import Feedback from "./components/Feedback.jsx";
+import Logo from "./components/Logo.jsx";
 import { startGeneration } from "./api/client.js";
 
 const STEPS = ["script", "media", "tts", "render", "concat"];
-const STEP_LABELS = { script: "Script", media: "Media", tts: "Voice", render: "Render", concat: "Export" };
 
 function App() {
   const [session, setSession] = useState(null);
@@ -33,6 +34,8 @@ function App() {
   const [result, setResult] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [appLang, setAppLang] = useState(() => localStorage.getItem("sf_lang") || "en");
+
+  const t = useMemo(() => getTranslation(appLang), [appLang]);
 
   // Listen for auth state changes
   useEffect(() => {
@@ -148,7 +151,7 @@ function App() {
             detail={detail}
             completedSteps={completedSteps}
             steps={STEPS}
-            stepLabels={STEP_LABELS}
+            stepLabels={{ script: t.stepScript, media: t.stepMedia, tts: t.stepVoice, render: t.stepRender, concat: t.stepExport }}
           />
         );
       }
@@ -171,16 +174,21 @@ function App() {
     return (
       <div className="auth-loading">
         <div className="auth-loading-spinner"></div>
-        <p>Loading...</p>
+        <p>{t.loading}</p>
       </div>
     );
   }
 
   if (!session) {
-    return <AuthPage onAuth={(s) => setSession(s)} />;
+    return (
+      <I18nContext.Provider value={t}>
+        <AuthPage onAuth={(s) => setSession(s)} />
+      </I18nContext.Provider>
+    );
   }
 
   return (
+    <I18nContext.Provider value={t}>
     <div className="layout">
       <Sidebar
         activePage={page}
@@ -194,9 +202,9 @@ function App() {
       {/* Mobile top bar */}
       <div className="mobile-topbar">
         {showBackBtn ? (
-          <button className="mobile-back-btn" onClick={goBack}>← Back</button>
+          <button className="mobile-back-btn" onClick={goBack}>{t.back}</button>
         ) : (
-          <div className="mobile-brand">🎬 StoryForge</div>
+          <div className="mobile-brand"><Logo size={22} /> PM Studio</div>
         )}
         <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>☰</button>
       </div>
@@ -205,12 +213,13 @@ function App() {
         {/* Desktop back button */}
         {showBackBtn && (
           <div className="desktop-back-bar">
-            <button className="back-btn" onClick={goBack}>← Back</button>
+            <button className="back-btn" onClick={goBack}>{t.back}</button>
           </div>
         )}
         {renderPage()}
       </main>
     </div>
+    </I18nContext.Provider>
   );
 }
 
