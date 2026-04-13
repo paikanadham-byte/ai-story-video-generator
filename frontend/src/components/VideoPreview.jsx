@@ -12,6 +12,7 @@ function VideoPreview({ result, onReset }) {
   const [thumbLoading, setThumbLoading] = useState(false);
   const [copied, setCopied] = useState(null);
   const [uploadStatus, setUploadStatus] = useState({});
+  const [downloading, setDownloading] = useState(null);
   const videoRef = useRef(null);
 
   // Auto-enable captions when video loads
@@ -73,6 +74,27 @@ function VideoPreview({ result, onReset }) {
     }, 2000);
   };
 
+  const handleDownload = async (url, filename) => {
+    setDownloading(filename);
+    try {
+      const resp = await fetch(url);
+      const blob = await resp.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      // Fallback: open in new tab
+      window.open(url, "_blank");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   return (
     <div className="page-container">
       <div className="page-header" style={{ textAlign: "center" }}>
@@ -108,13 +130,13 @@ function VideoPreview({ result, onReset }) {
         </p>
 
         <div className="video-actions">
-          <a href={videoUrl} download className="btn btn-primary">
-            {t.downloadMP4}
-          </a>
+          <button className="btn btn-primary" onClick={() => handleDownload(videoUrl, `${script?.title || "video"}.mp4`)} disabled={downloading === `${script?.title || "video"}.mp4`}>
+            {downloading ? "⏳" : "⬇️"} {t.downloadMP4}
+          </button>
           {subtitlesUrl && (
-            <a href={subtitlesUrl} download className="btn btn-secondary">
+            <button className="btn btn-secondary" onClick={() => handleDownload(subtitlesUrl, `${script?.title || "subtitles"}.srt`)} disabled={downloading === `${script?.title || "subtitles"}.srt`}>
               {t.downloadSubtitles}
-            </a>
+            </button>
           )}
           <button className="btn btn-secondary" onClick={onReset}>
             {t.createAnother}
@@ -229,7 +251,7 @@ function VideoPreview({ result, onReset }) {
           <div className="thumbnail-concepts">
             {thumbnails.map((th, i) => (
               <div key={i} className="thumbnail-card">
-                <div className="thumb-preview" style={{ background: `linear-gradient(135deg, ${th.colorScheme?.split(" ")[0] || "#8b5cf6"} 0%, ${th.colorScheme?.split(" ").pop() || "#06b6d4"} 100%)` }}>
+                <div className="thumb-preview" style={{ background: `linear-gradient(135deg, ${th.colorScheme?.split(" ")[0] || "#e94560"} 0%, ${th.colorScheme?.split(" ").pop() || "#1a1a2e"} 100%)` }}>
                   <span className="thumb-text-overlay">{th.textOverlay}</span>
                   <span className="thumb-style-badge">{th.style}</span>
                 </div>

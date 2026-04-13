@@ -18,7 +18,7 @@ const APP_LANGUAGES = [
   { code: "ru", name: "Русский", dir: "ltr" },
 ];
 
-function Settings({ user, onSignOut, appLang, onChangeLang }) {
+function Settings({ user, onSignOut, appLang, onChangeLang, appTheme, onChangeTheme }) {
   const t = useI18n();
   const [confirmLogout, setConfirmLogout] = useState(false);
   const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
@@ -81,9 +81,19 @@ function Settings({ user, onSignOut, appLang, onChangeLang }) {
       {/* Theme */}
       <div className="card">
         <div className="card-title"><span>🎨</span> {t.theme}</div>
-        <div className="option-grid">
-          <button className="option-button active">{t.dark}</button>
-          <button className="option-button" disabled style={{ opacity: 0.4 }}>{t.lightComingSoon}</button>
+        <div className="theme-toggle-grid">
+          <button
+            className={`theme-btn ${appTheme === "dark" ? "active" : ""}`}
+            onClick={() => onChangeTheme("dark")}
+          >
+            {t.dark}
+          </button>
+          <button
+            className={`theme-btn ${appTheme === "light" ? "active" : ""}`}
+            onClick={() => onChangeTheme("light")}
+          >
+            {t.light}
+          </button>
         </div>
       </div>
 

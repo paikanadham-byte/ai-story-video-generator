@@ -12,6 +12,7 @@ import CopyrightTransformer from "./components/CopyrightTransformer.jsx";
 import ProFeatures from "./components/ProFeatures.jsx";
 import ApiAccess from "./components/ApiAccess.jsx";
 import VoiceCloning from "./components/VoiceCloning.jsx";
+import VocalRemover from "./components/VocalRemover.jsx";
 import AuthPage from "./components/AuthPage.jsx";
 import Settings from "./components/Settings.jsx";
 import Feedback from "./components/Feedback.jsx";
@@ -34,8 +35,15 @@ function App() {
   const [result, setResult] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [appLang, setAppLang] = useState(() => localStorage.getItem("sf_lang") || "en");
+  const [appTheme, setAppTheme] = useState(() => localStorage.getItem("sf_theme") || "dark");
 
   const t = useMemo(() => getTranslation(appLang), [appLang]);
+
+  // Apply theme to document
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", appTheme);
+    localStorage.setItem("sf_theme", appTheme);
+  }, [appTheme]);
 
   // Listen for auth state changes
   useEffect(() => {
@@ -162,10 +170,11 @@ function App() {
     }
     if (page === "editor") return <VideoEditor />;
     if (page === "copyright") return <CopyrightTransformer />;
+    if (page === "vocal-remover") return <VocalRemover />;
     if (page === "pro") return <ProFeatures />;
     if (page === "api") return <ApiAccess />;
     if (page === "voice-clone") return <VoiceCloning />;
-    if (page === "settings") return <Settings user={session.user} onSignOut={handleSignOut} appLang={appLang} onChangeLang={setAppLang} />;
+    if (page === "settings") return <Settings user={session.user} onSignOut={handleSignOut} appLang={appLang} onChangeLang={setAppLang} appTheme={appTheme} onChangeTheme={setAppTheme} />;
     if (page === "feedback") return <Feedback />;
     return <Dashboard onNavigate={navigateTo} />;
   };

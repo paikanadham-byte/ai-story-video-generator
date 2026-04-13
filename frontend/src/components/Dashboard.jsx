@@ -54,6 +54,12 @@ function Dashboard({ onNavigate }) {
           <h3>{t.copyrightTransformer}</h3>
           <p>{t.copyrightTransformerDesc}</p>
         </button>
+
+        <button className="quick-action" onClick={() => onNavigate("vocal-remover")}>
+          <div className="quick-action-icon">🎤</div>
+          <h3>{t.vocalRemover}</h3>
+          <p>{t.vocalRemoverDesc}</p>
+        </button>
       </div>
 
       <div className="page-header" style={{ marginBottom: 16 }}>

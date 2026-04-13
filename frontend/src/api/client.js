@@ -179,3 +179,19 @@ export async function previewVoice(voiceId, text) {
   if (!res.ok) throw new Error("Preview failed");
   return res.blob();
 }
+
+// ── Vocal Separator APIs ──
+
+export async function separateVocals(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch(`${API_BASE}/vocal/separate`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Separation failed" }));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
