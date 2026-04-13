@@ -30,7 +30,7 @@ body{font-family:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;background:
 .sidebar{width:var(--sidebar-width);min-height:100vh;background:var(--gradient-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100}
 .sidebar-brand{padding:22px 18px 18px;border-bottom:1px solid var(--border)}
 .sidebar-brand-inner{display:flex;align-items:center;gap:11px}
-.brand-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-glow);overflow:hidden}
+.brand-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);overflow:hidden}
 .brand-text h1{font-size:15px;font-weight:800;letter-spacing:-0.02em;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .brand-text p{font-size:10px;color:var(--text-muted);margin-top:1px}
 .sidebar-nav{flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:1px;overflow-y:auto}
@@ -313,7 +313,7 @@ body{font-family:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;background:
 .auth-container{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg-primary);padding:20px}
 .auth-card{width:100%;max-width:420px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-xl);padding:36px 32px;box-shadow:var(--shadow-lg)}
 .auth-header{text-align:center;margin-bottom:28px}
-.auth-logo{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:var(--shadow-glow);overflow:hidden}
+.auth-logo{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 16px rgba(0,0,0,0.35);overflow:hidden}
 .auth-header h1{font-size:22px;font-weight:800;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .auth-header p{font-size:12px;color:var(--text-muted);margin-top:4px}
 

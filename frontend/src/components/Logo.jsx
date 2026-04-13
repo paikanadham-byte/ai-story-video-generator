@@ -10,33 +10,35 @@ function Logo({ size = 34 }) {
     >
       <defs>
         <linearGradient id="pm-bg" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#8b5cf6" />
-          <stop offset="55%" stopColor="#7c3aed" />
-          <stop offset="100%" stopColor="#06b6d4" />
+          <stop offset="0%" stopColor="#1a1a2e" />
+          <stop offset="100%" stopColor="#16213e" />
         </linearGradient>
-        <linearGradient id="pm-accent" x1="60" y1="0" x2="60" y2="120" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="rgba(255,255,255,0.18)" />
-          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        <linearGradient id="pm-letter" x1="10" y1="24" x2="110" y2="96" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#e2e8f0" />
+          <stop offset="100%" stopColor="#ffffff" />
         </linearGradient>
       </defs>
-      {/* Background */}
-      <rect width="120" height="120" rx="28" fill="url(#pm-bg)" />
-      <rect width="120" height="120" rx="28" fill="url(#pm-accent)" />
-      {/* P */}
+      {/* Dark background */}
+      <rect width="120" height="120" rx="24" fill="url(#pm-bg)" />
+      {/* Thin border */}
+      <rect x="1.5" y="1.5" width="117" height="117" rx="22.5" stroke="rgba(255,255,255,0.08)" strokeWidth="1" fill="none" />
+      {/* P — with play triangle as the counter space */}
       <path
-        d="M18 94V26h20c14 0 22 8 22 18.5S52 63 38 63H30v31H18Z M30 37v16h7c6 0 10-3.2 10-8s-4-8-10-8H30Z"
-        fill="white"
-        fillRule="evenodd"
+        d="M14 96V24h22c16 0 26 9 26 21s-10 21-26 21H28v30H14Z"
+        fill="url(#pm-letter)"
       />
-      {/* M */}
+      {/* Play triangle cut out of the P's bowl */}
       <path
-        d="M66 94V26h3.5L84 62l14.5-36H102v68H91V48L80 76h-0L66 44"
-        fill="white"
-        fillOpacity="0"
+        d="M33 36l14 9-14 9Z"
+        fill="#1a1a2e"
       />
-      <path d="M66 94V26h11l8 24 8-24h11v68h-11V50l-8 22-8-22v44H66Z" fill="white" />
-      {/* Subtle play accent */}
-      <circle cx="104" cy="16" r="5" fill="rgba(6,182,212,0.5)" />
+      {/* M — bold angular */}
+      <path
+        d="M68 96V24h10l12 32 12-32h10v72h-12V52l-10 28-10-28v44H68Z"
+        fill="url(#pm-letter)"
+      />
+      {/* Accent bar — film strip / timeline */}
+      <rect x="14" y="106" width="92" height="3" rx="1.5" fill="#e94560" />
     </svg>
   );
 }
