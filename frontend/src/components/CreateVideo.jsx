@@ -1,12 +1,28 @@
 import { useState, useEffect } from "react";
 import { getStoryIdeas, getLanguages, getClonedVoices } from "../api/client.js";
 
+const CONTENT_TYPES = [
+  { id: "story", label: "📖 Story / Narrative" },
+  { id: "educational", label: "🎓 Educational" },
+  { id: "tutorial", label: "📐 Tutorial / How-To" },
+  { id: "product", label: "🛍️ Product Promo" },
+  { id: "news", label: "📰 News / Explainer" },
+  { id: "social", label: "📱 Social Media" },
+  { id: "vlog", label: "🎤 Vlog Style" },
+  { id: "meditation", label: "🧘 Meditation / ASMR" },
+];
+
 const GENRES = [
   { id: "cinematic", label: "🎥 Cinematic" },
   { id: "horror", label: "👻 Horror" },
   { id: "romance", label: "❤️ Romance" },
   { id: "documentary", label: "🎞️ Documentary" },
   { id: "motivational", label: "🔥 Motivational" },
+  { id: "comedy", label: "😂 Comedy" },
+  { id: "scifi", label: "🚀 Sci-Fi" },
+  { id: "thriller", label: "🔪 Thriller" },
+  { id: "fantasy", label: "🧙 Fantasy" },
+  { id: "action", label: "💥 Action" },
 ];
 
 const VOICES = [
@@ -44,6 +60,7 @@ const MUSIC_MOODS = [
 
 const LANGUAGES = [
   { code: "en", name: "🇺🇸 English" },
+  { code: "fa", name: "🇮🇷 Persian (فارسی)" },
   { code: "es", name: "🇪🇸 Spanish" },
   { code: "fr", name: "🇫🇷 French" },
   { code: "de", name: "🇩🇪 German" },
@@ -65,12 +82,21 @@ const LANGUAGES = [
   { code: "uk", name: "🇺🇦 Ukrainian" },
 ];
 
+const PLATFORMS = [
+  { id: "landscape", label: "🖥️ YouTube (16:9)", ratio: "16:9" },
+  { id: "portrait", label: "📱 TikTok / Reels (9:16)", ratio: "9:16" },
+  { id: "square", label: "⬛ Instagram Post (1:1)", ratio: "1:1" },
+  { id: "classic", label: "🎬 Cinema (21:9)", ratio: "21:9" },
+];
+
 function CreateVideo({ onGenerate, error }) {
   const [storyIdea, setStoryIdea] = useState("");
+  const [contentType, setContentType] = useState("story");
   const [genre, setGenre] = useState("cinematic");
   const [voiceStyle, setVoiceStyle] = useState("storyteller");
   const [targetDuration, setTargetDuration] = useState(2);
   const [resolution, setResolution] = useState("1080p");
+  const [platform, setPlatform] = useState("landscape");
   const [musicMood, setMusicMood] = useState("");
   const [language, setLanguage] = useState("en");
   const [priorityRender, setPriorityRender] = useState(false);
@@ -105,10 +131,12 @@ function CreateVideo({ onGenerate, error }) {
     try {
       await onGenerate({
         storyIdea: storyIdea.trim(),
+        contentType,
         genre,
         voiceStyle,
         targetDuration,
         resolution,
+        platform: PLATFORMS.find(p => p.id === platform)?.ratio || "16:9",
         musicMood: musicMood || null,
         language,
         priorityRender,
@@ -122,7 +150,7 @@ function CreateVideo({ onGenerate, error }) {
     <div className="page-container">
       <div className="page-header">
         <h2>Create AI Video</h2>
-        <p>Turn any story idea into a full cinematic video</p>
+        <p>Turn any idea into a professional video — stories, tutorials, promos, and more</p>
       </div>
 
       {error && (
@@ -132,15 +160,37 @@ function CreateVideo({ onGenerate, error }) {
         </div>
       )}
 
+      {/* Content Type */}
+      <div className="card">
+        <div className="card-title"><span>🎯</span> Content Type</div>
+        <div className="option-grid">
+          {CONTENT_TYPES.map((t) => (
+            <button
+              key={t.id}
+              className={`option-button ${contentType === t.id ? "active" : ""}`}
+              onClick={() => setContentType(t.id)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Story Input */}
       <div className="card">
         <div className="card-title">
-          <span>✍️</span> Story Idea
+          <span>✍️</span> {contentType === "story" ? "Story Idea" : "Video Description"}
         </div>
         <div className="form-group">
           <textarea
             className="textarea-input"
-            placeholder="Describe your story idea in detail...&#10;&#10;Example: A lonely astronaut discovers a mysterious signal from a dead planet. As she investigates, she uncovers an ancient civilization's final message to the universe — a warning about the nature of time itself."
+            placeholder={contentType === "story"
+              ? "Describe your story idea in detail...\n\nExample: A lonely astronaut discovers a mysterious signal from a dead planet."
+              : contentType === "tutorial"
+              ? "Describe what you want to teach...\n\nExample: How to build a simple website using HTML & CSS in 5 minutes."
+              : contentType === "product"
+              ? "Describe your product or service...\n\nExample: Our new wireless earbuds combine premium audio with 36-hour battery life."
+              : "Describe your video idea in detail...\n\nExample: Top 10 fascinating facts about the deep ocean that will blow your mind."}
             value={storyIdea}
             onChange={(e) => setStoryIdea(e.target.value)}
             maxLength={5000}
@@ -194,6 +244,22 @@ function CreateVideo({ onGenerate, error }) {
               onClick={() => setGenre(g.id)}
             >
               {g.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Platform / Aspect Ratio */}
+      <div className="card">
+        <div className="card-title"><span>📐</span> Platform / Size</div>
+        <div className="option-grid">
+          {PLATFORMS.map((p) => (
+            <button
+              key={p.id}
+              className={`option-button ${platform === p.id ? "active" : ""}`}
+              onClick={() => setPlatform(p.id)}
+            >
+              {p.label}
             </button>
           ))}
         </div>

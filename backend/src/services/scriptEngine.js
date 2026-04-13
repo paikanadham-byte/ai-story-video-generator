@@ -179,7 +179,16 @@ Generate a cinematic script with exactly ${clampedCount} scenes. Make the visual
     // Try to extract JSON object from content
     const objMatch = content.match(/\{[\s\S]*\}/);
     if (objMatch) {
-      script = JSON.parse(objMatch[0]);
+      let raw = objMatch[0];
+      // Fix common LLM JSON issues: trailing commas before ] or }
+      raw = raw.replace(/,\s*([\]}])/g, "$1");
+      // Fix unescaped newlines inside strings
+      raw = raw.replace(/(?<=:\s*"[^"]*)\n(?=[^"]*")/g, "\\n");
+      try {
+        script = JSON.parse(raw);
+      } catch {
+        throw new Error("Failed to parse script JSON from LLM response");
+      }
     } else {
       throw new Error("Failed to parse script JSON from LLM response");
     }

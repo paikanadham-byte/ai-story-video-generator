@@ -12,6 +12,13 @@ const TOOLS = [
   { id: "filter", icon: "🎨", name: "Filters", desc: "Apply color filters & effects" },
   { id: "flip", icon: "🔄", name: "Mirror/Flip", desc: "Flip video horizontally" },
   { id: "watermark", icon: "✏️", name: "Text Overlay", desc: "Add custom text on video" },
+  { id: "volume", icon: "🔊", name: "Volume", desc: "Adjust audio volume level" },
+  { id: "pitch", icon: "🎛️", name: "Pitch", desc: "Change audio pitch" },
+  { id: "overlay", icon: "🖼️", name: "Overlay", desc: "Add image overlay on video" },
+  { id: "transition", icon: "🔀", name: "Transitions", desc: "Add transition effects" },
+  { id: "voicechanger", icon: "🗣️", name: "Voice Changer", desc: "Apply voice effects" },
+  { id: "watermark_remove", icon: "🧹", name: "Remove Watermark", desc: "Remove watermarks from video" },
+  { id: "bg_remove", icon: "🖼️", name: "Remove BG", desc: "Remove video background" },
 ];
 
 const PLATFORMS = [
@@ -46,6 +53,10 @@ function VideoEditor() {
   const [trimStart, setTrimStart] = useState("0");
   const [trimEnd, setTrimEnd] = useState("30");
   const [revoiceVoice, setRevoiceVoice] = useState("male_deep");
+  const [volumeValue, setVolumeValue] = useState("1.0");
+  const [pitchValue, setPitchValue] = useState("1.0");
+  const [transitionType, setTransitionType] = useState("fade");
+  const [voiceEffect, setVoiceEffect] = useState("deep");
 
   const fileRef = useRef(null);
 
@@ -100,6 +111,10 @@ function VideoEditor() {
       opts.trimEnd = trimEnd;
     }
     if (activeTool === "revoice") opts.voiceStyle = revoiceVoice;
+    if (activeTool === "volume") opts.volume = volumeValue;
+    if (activeTool === "pitch") opts.pitch = pitchValue;
+    if (activeTool === "transition") opts.transition = transitionType;
+    if (activeTool === "voicechanger") opts.voiceEffect = voiceEffect;
     return opts;
   };
 
@@ -359,6 +374,86 @@ function VideoEditor() {
                     <input className="text-input" type="number" placeholder="30" min="0" value={trimEnd} onChange={(e) => setTrimEnd(e.target.value)} />
                   </div>
                 </div>
+              )}
+
+              {activeTool === "volume" && (
+                <div className="form-group">
+                  <label className="form-label">Volume Level</label>
+                  <input type="range" min="0" max="3" step="0.1" value={volumeValue} onChange={(e) => setVolumeValue(e.target.value)} className="range-input" />
+                  <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 6, textAlign: "center" }}>{(volumeValue * 100).toFixed(0)}%</div>
+                </div>
+              )}
+
+              {activeTool === "pitch" && (
+                <div className="form-group">
+                  <label className="form-label">Pitch Adjustment</label>
+                  <input type="range" min="0.5" max="2" step="0.1" value={pitchValue} onChange={(e) => setPitchValue(e.target.value)} className="range-input" />
+                  <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 6, textAlign: "center" }}>{pitchValue}x</div>
+                </div>
+              )}
+
+              {activeTool === "transition" && (
+                <div className="option-grid">
+                  {[
+                    { id: "fade", label: "Fade" },
+                    { id: "dissolve", label: "Dissolve" },
+                    { id: "wipe", label: "Wipe" },
+                    { id: "slide", label: "Slide" },
+                    { id: "zoom", label: "Zoom" },
+                    { id: "blur", label: "Blur" },
+                  ].map((t) => (
+                    <button key={t.id} className={`option-button ${transitionType === t.id ? "active" : ""}`} onClick={() => setTransitionType(t.id)}>
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {activeTool === "voicechanger" && (
+                <div className="option-grid">
+                  {[
+                    { id: "deep", label: "🔊 Deep" },
+                    { id: "high", label: "🎵 High Pitch" },
+                    { id: "robot", label: "🤖 Robot" },
+                    { id: "echo", label: "🏔️ Echo" },
+                    { id: "whisper", label: "🤫 Whisper" },
+                    { id: "radio", label: "📻 Radio" },
+                  ].map((v) => (
+                    <button key={v.id} className={`option-button ${voiceEffect === v.id ? "active" : ""}`} onClick={() => setVoiceEffect(v.id)}>
+                      {v.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {activeTool === "overlay" && (
+                <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
+                  Upload an image to overlay on your video. The overlay will be centered and semi-transparent.
+                </p>
+              )}
+
+              {activeTool === "music" && (
+                <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
+                  A royalty-free background music track will be mixed into your video at a lower volume behind the original audio.
+                </p>
+              )}
+
+              {activeTool === "flip" && (
+                <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
+                  The video will be flipped horizontally (mirrored), useful for copyright safety or visual variety.
+                </p>
+              )}
+
+              {activeTool === "watermark_remove" && (
+                <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
+                  AI will attempt to detect and remove watermarks from the video. Works best with small, static watermarks.
+                </p>
+              )}
+
+              {activeTool === "bg_remove" && (
+                <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 12 }}>
+                  AI will remove the background from the video, keeping only the main subject. Best for videos with a single subject.
+                </p>
               )}
 
               <div style={{ marginTop: 16 }}>

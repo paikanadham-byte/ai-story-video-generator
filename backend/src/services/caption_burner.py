@@ -175,7 +175,7 @@ def burn_captions(input_video, srt_path, output_video, width=1920, height=1080):
             })
 
         # Build FFmpeg command with overlay filters
-        cmd = ["/usr/local/bin/ffmpeg", "-y", "-i", input_video]
+        cmd = ["ffmpeg", "-y", "-i", input_video]
 
         # Add each overlay image as input
         for ov in overlay_inputs:
@@ -227,7 +227,7 @@ def burn_captions(input_video, srt_path, output_video, width=1920, height=1080):
 def embed_soft_subs(input_video, srt_path, output_video):
     """Fallback: embed SRT as mov_text subtitle track."""
     cmd = [
-        "/usr/local/bin/ffmpeg", "-y",
+        "ffmpeg", "-y",
         "-i", input_video,
         "-i", srt_path,
         "-c:v", "copy",

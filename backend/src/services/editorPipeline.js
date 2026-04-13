@@ -5,10 +5,8 @@ import { ensureDir } from "../utils/helpers.js";
 import { generateSpeech } from "./ttsEngine.js";
 import config from "../config/index.js";
 
-if (config.ffmpeg.path) ffmpeg.setFfmpegPath(config.ffmpeg.path);
-else ffmpeg.setFfmpegPath("/usr/local/bin/ffmpeg");
-if (config.ffmpeg.probePath) ffmpeg.setFfprobePath(config.ffmpeg.probePath);
-else ffmpeg.setFfprobePath("/usr/local/bin/ffprobe");
+ffmpeg.setFfmpegPath(config.ffmpeg.path || "/usr/bin/ffmpeg");
+ffmpeg.setFfprobePath(config.ffmpeg.probePath || "/usr/bin/ffprobe");
 
 // ── Get media duration ──
 

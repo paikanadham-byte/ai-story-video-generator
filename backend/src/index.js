@@ -43,7 +43,20 @@ app.use("/api/editor", editorRouter);
 app.use("/api/pro", proRouter);
 app.use("/api/voices", voicesRouter);
 
+// Feedback endpoint
+app.post("/api/feedback", (req, res) => {
+  const { type, message, email } = req.body;
+  if (!message || !message.trim()) {
+    return res.status(400).json({ error: "Message is required" });
+  }
+  console.log(`[FEEDBACK] type=${type} email=${email || "none"} message=${message.substring(0, 200)}`);
+  res.json({ success: true });
+});
+
 // Health check
+app.get("/", (_req, res) => {
+  res.json({ status: "ok", timestamp: Date.now() });
+});
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: Date.now() });
 });
