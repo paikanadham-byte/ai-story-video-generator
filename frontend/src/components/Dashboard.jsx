@@ -1,4 +1,5 @@
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 function Dashboard({ onNavigate }) {
   const t = useI18n();
@@ -11,22 +12,22 @@ function Dashboard({ onNavigate }) {
 
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon purple">🎬</div>
+          <div className="stat-icon purple"><I name="clapperboard" size={20} /></div>
           <div className="stat-value">∞</div>
           <div className="stat-label">{t.unlimitedRenders}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon cyan">🎙️</div>
+          <div className="stat-icon cyan"><I name="headphones" size={20} /></div>
           <div className="stat-value">10+</div>
           <div className="stat-label">{t.aiVoicesCloning}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon pink">🌐</div>
+          <div className="stat-icon pink"><I name="globe" size={20} /></div>
           <div className="stat-value">20</div>
           <div className="stat-label">{t.languages}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon amber">💎</div>
+          <div className="stat-icon amber"><I name="gem" size={20} /></div>
           <div className="stat-value">{t.pro}</div>
           <div className="stat-label">{t.allFeaturesUnlocked}</div>
         </div>
@@ -38,31 +39,27 @@ function Dashboard({ onNavigate }) {
 
       <div className="quick-actions">
         <button className="quick-action" onClick={() => onNavigate("create")}>
-          <div className="quick-action-icon">✨</div>
+          <div className="quick-action-icon"><I name="sparkles" size={26} /></div>
           <h3>{t.createAIVideo}</h3>
           <p>{t.createAIVideoDesc}</p>
         </button>
-
         <button className="quick-action" onClick={() => onNavigate("editor")}>
-          <div className="quick-action-icon">🎞️</div>
+          <div className="quick-action-icon"><I name="film" size={26} /></div>
           <h3>{t.videoEditorTitle}</h3>
           <p>{t.videoEditorDesc}</p>
         </button>
-
         <button className="quick-action" onClick={() => onNavigate("copyright")}>
-          <div className="quick-action-icon">🛡️</div>
+          <div className="quick-action-icon"><I name="shield" size={26} /></div>
           <h3>{t.copyrightTransformer}</h3>
           <p>{t.copyrightTransformerDesc}</p>
         </button>
-
         <button className="quick-action" onClick={() => onNavigate("vocal-remover")}>
-          <div className="quick-action-icon">🎤</div>
+          <div className="quick-action-icon"><I name="mic" size={26} /></div>
           <h3>{t.vocalRemover}</h3>
           <p>{t.vocalRemoverDesc}</p>
         </button>
-
         <button className="quick-action" onClick={() => onNavigate("image-enhance")}>
-          <div className="quick-action-icon">🖼️</div>
+          <div className="quick-action-icon"><I name="imagePlus" size={26} /></div>
           <h3>{t.imageEnhancer}</h3>
           <p>{t.imageEnhancerDesc}</p>
         </button>
@@ -74,19 +71,17 @@ function Dashboard({ onNavigate }) {
 
       <div className="quick-actions">
         <button className="quick-action" onClick={() => onNavigate("voice-clone")}>
-          <div className="quick-action-icon">🧬</div>
+          <div className="quick-action-icon"><I name="micVocal" size={26} /></div>
           <h3>{t.voiceCloningTitle}</h3>
           <p>{t.voiceCloningDesc}</p>
         </button>
-
         <button className="quick-action" onClick={() => onNavigate("api")}>
-          <div className="quick-action-icon">📱</div>
+          <div className="quick-action-icon"><I name="code" size={26} /></div>
           <h3>{t.apiAccessTitle}</h3>
           <p>{t.apiAccessDesc}</p>
         </button>
-
         <button className="quick-action" onClick={() => onNavigate("pro")}>
-          <div className="quick-action-icon">💎</div>
+          <div className="quick-action-icon"><I name="gem" size={26} /></div>
           <h3>{t.allFeaturesBtn}</h3>
           <p>{t.allFeaturesDesc}</p>
         </button>
@@ -98,22 +93,22 @@ function Dashboard({ onNavigate }) {
 
       <div className="features-grid">
         {[
-          { icon: "📝", key: "feat_aiScriptWriter", descKey: "feat_aiScriptWriterDesc", isFree: true },
-          { icon: "🎙️", key: "feat_10aiVoices", descKey: "feat_10aiVoicesDesc", isFree: true },
-          { icon: "📷", key: "feat_stockMedia", descKey: "feat_stockMediaDesc", isFree: true },
-          { icon: "💬", key: "feat_autoSubtitles", descKey: "feat_autoSubtitlesDesc", isFree: true },
-          { icon: "💡", key: "feat_ideaGenerator", descKey: "feat_ideaGeneratorDesc", isFree: true },
-          { icon: "🔄", key: "feat_copyrightTransformerFeat", descKey: "feat_copyrightTransformerFeatDesc", isFree: true },
-          { icon: "🎨", key: "feat_4kExport", descKey: "feat_4kExportDesc", isFree: false },
-          { icon: "🧬", key: "feat_voiceCloning", descKey: "feat_voiceCloningDesc", isFree: false },
-          { icon: "🚀", key: "feat_priorityRendering", descKey: "feat_priorityRenderingDesc", isFree: false },
-          { icon: "♾️", key: "feat_unlimitedRenders", descKey: "feat_unlimitedRendersDesc", isFree: false },
-          { icon: "🌐", key: "feat_multiLanguage", descKey: "feat_multiLanguageDesc", isFree: false },
-          { icon: "📱", key: "feat_apiAccess", descKey: "feat_apiAccessDesc", isFree: false },
+          { icon: "fileText", key: "feat_aiScriptWriter", descKey: "feat_aiScriptWriterDesc", isFree: true },
+          { icon: "headphones", key: "feat_10aiVoices", descKey: "feat_10aiVoicesDesc", isFree: true },
+          { icon: "camera", key: "feat_stockMedia", descKey: "feat_stockMediaDesc", isFree: true },
+          { icon: "type", key: "feat_autoSubtitles", descKey: "feat_autoSubtitlesDesc", isFree: true },
+          { icon: "wand", key: "feat_ideaGenerator", descKey: "feat_ideaGeneratorDesc", isFree: true },
+          { icon: "shield", key: "feat_copyrightTransformerFeat", descKey: "feat_copyrightTransformerFeatDesc", isFree: true },
+          { icon: "palette", key: "feat_4kExport", descKey: "feat_4kExportDesc", isFree: false },
+          { icon: "micVocal", key: "feat_voiceCloning", descKey: "feat_voiceCloningDesc", isFree: false },
+          { icon: "rocket", key: "feat_priorityRendering", descKey: "feat_priorityRenderingDesc", isFree: false },
+          { icon: "infinity", key: "feat_unlimitedRenders", descKey: "feat_unlimitedRendersDesc", isFree: false },
+          { icon: "globe", key: "feat_multiLanguage", descKey: "feat_multiLanguageDesc", isFree: false },
+          { icon: "code", key: "feat_apiAccess", descKey: "feat_apiAccessDesc", isFree: false },
         ].map((f, i) => (
           <div key={i} className="feature-card">
             <span className={`pro-label ${f.isFree ? "free" : "unlocked"}`}>{f.isFree ? t.free : t.unlocked}</span>
-            <div className="feature-icon">{f.icon}</div>
+            <div className="feature-icon"><I name={f.icon} size={22} /></div>
             <h3>{t[f.key]}</h3>
             <p>{t[f.descKey]}</p>
           </div>

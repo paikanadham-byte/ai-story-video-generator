@@ -2,16 +2,17 @@ import { useState, useRef } from "react";
 import { io } from "socket.io-client";
 import { uploadVideo, startTransform, downloadVideoUrl } from "../api/client.js";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 const TRANSFORM_DEFS = [
-  { id: "revoice", icon: "🎙️", titleKey: "ct_revoice", descKey: "ct_revoiceDesc" },
-  { id: "mirror", icon: "🪞", titleKey: "ct_mirror", descKey: "ct_mirrorDesc" },
-  { id: "crop", icon: "📐", titleKey: "ct_crop", descKey: "ct_cropDesc" },
-  { id: "speed", icon: "⚡", titleKey: "ct_speed", descKey: "ct_speedDesc" },
-  { id: "color", icon: "🎨", titleKey: "ct_color", descKey: "ct_colorDesc" },
-  { id: "music", icon: "🎵", titleKey: "ct_music", descKey: "ct_musicDesc" },
-  { id: "subtitles", icon: "💬", titleKey: "ct_subtitles", descKey: "ct_subtitlesDesc" },
-  { id: "zoom", icon: "🔍", titleKey: "ct_zoom", descKey: "ct_zoomDesc" },
+  { id: "revoice", icon: "mic", titleKey: "ct_revoice", descKey: "ct_revoiceDesc" },
+  { id: "mirror", icon: "flipHorizontal", titleKey: "ct_mirror", descKey: "ct_mirrorDesc" },
+  { id: "crop", icon: "monitor", titleKey: "ct_crop", descKey: "ct_cropDesc" },
+  { id: "speed", icon: "zap", titleKey: "ct_speed", descKey: "ct_speedDesc" },
+  { id: "color", icon: "palette", titleKey: "ct_color", descKey: "ct_colorDesc" },
+  { id: "music", icon: "music", titleKey: "ct_music", descKey: "ct_musicDesc" },
+  { id: "subtitles", icon: "type", titleKey: "ct_subtitles", descKey: "ct_subtitlesDesc" },
+  { id: "zoom", icon: "search", titleKey: "ct_zoom", descKey: "ct_zoomDesc" },
 ];
 
 function CopyrightTransformer() {
@@ -160,7 +161,7 @@ function CopyrightTransformer() {
 
       {error && (
         <div className="error-banner">
-          <span>⚠️</span>
+          <I name="alert" size={16} />
           <span>{error}</span>
         </div>
       )}
@@ -173,7 +174,7 @@ function CopyrightTransformer() {
           onDrop={handleDrop}
           onClick={() => fileRef.current?.click()}
         >
-          <div className="upload-icon">🛡️</div>
+          <div className="upload-icon"><I name="shield" size={40} /></div>
           <div className="upload-title">{t.copyrightDropTitle}</div>
           <div className="upload-subtitle">{t.copyrightDropSub}</div>
 
@@ -236,7 +237,7 @@ function CopyrightTransformer() {
           {!processing && (
             <div className="card">
               <div className="card-title">
-                <span>🔧</span> {t.selectTransformations}
+                <I name="wrench" size={18} /> {t.selectTransformations}
                 <span className="badge">{selected.length} {t.selected}</span>
               </div>
 
@@ -253,9 +254,9 @@ function CopyrightTransformer() {
                       className={`transform-option ${isSelected ? "selected" : ""}`}
                       onClick={() => toggleTransform(tr.id)}
                     >
-                      <div className="transform-check">{isSelected ? "✓" : ""}</div>
+                      <div className="transform-check">{isSelected ? <I name="check" size={14} /> : ""}</div>
                       <div className="transform-info">
-                        <h4>{tr.icon} {t[tr.titleKey]}</h4>
+                        <h4><I name={tr.icon} size={16} /> {t[tr.titleKey]}</h4>
                         <p>{t[tr.descKey]}</p>
                       </div>
                     </button>
@@ -271,7 +272,7 @@ function CopyrightTransformer() {
               onClick={handleTransform}
               disabled={processing || uploading || selected.length === 0 || !serverPath}
             >
-              {uploading ? t.loading : `🛡️ ${t.applyTransformations} (${selected.length})`}
+              {uploading ? t.loading : <><I name="shield" size={16} /> {t.applyTransformations} ({selected.length})</>}
             </button>
           )}
 

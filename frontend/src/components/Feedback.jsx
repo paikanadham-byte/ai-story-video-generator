@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
@@ -41,7 +42,7 @@ function Feedback() {
 
       {sent ? (
         <div className="card glow" style={{ textAlign: "center", padding: 44 }}>
-          <div style={{ fontSize: 56, marginBottom: 14 }}>✅</div>
+          <div style={{ fontSize: 56, marginBottom: 14 }}><I name="check" size={56} /></div>
           <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{t.thankYou}</h3>
           <p style={{ color: "var(--text-secondary)", marginBottom: 20 }}>
             {t.feedbackReceived}
@@ -52,12 +53,12 @@ function Feedback() {
         <>
           {error && (
             <div className="error-banner">
-              <span>⚠️</span><span>{error}</span>
+              <I name="alert" size={14} /><span>{error}</span>
             </div>
           )}
 
           <div className="card">
-            <div className="card-title"><span>📝</span> {t.type}</div>
+            <div className="card-title"><I name="fileText" size={18} /> {t.type}</div>
             <div className="option-grid">
               {[
                 { id: "feedback", label: t.generalFeedback },
@@ -77,7 +78,7 @@ function Feedback() {
           </div>
 
           <div className="card">
-            <div className="card-title"><span>✍️</span> {t.yourMessage}</div>
+            <div className="card-title"><I name="pen" size={18} /> {t.yourMessage}</div>
             <div className="form-group">
               <textarea
                 className="textarea-input"

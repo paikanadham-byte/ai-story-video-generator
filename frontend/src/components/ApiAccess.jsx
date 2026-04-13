@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getApiKeyInfo } from "../api/client.js";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 function ApiAccess() {
   const t = useI18n();
@@ -42,7 +43,7 @@ function ApiAccess() {
 
       <div className="card glow">
         <div className="card-title">
-          <span>🔑</span> {t.yourApiKey}
+          <I name="key" size={18} /> {t.yourApiKey}
         </div>
         <div className="api-key-box">
           <code className="api-key-value">
@@ -61,7 +62,7 @@ function ApiAccess() {
 
       <div className="card">
         <div className="card-title">
-          <span>🌐</span> {t.baseUrl}
+          <I name="globe" size={18} /> {t.baseUrl}
         </div>
         <div className="api-key-box">
           <code className="api-key-value">{apiInfo?.baseUrl}</code>
@@ -73,7 +74,7 @@ function ApiAccess() {
 
       <div className="card">
         <div className="card-title">
-          <span>📚</span> {t.apiEndpoints}
+          <I name="bookOpen" size={18} /> {t.apiEndpoints}
         </div>
         <div className="api-endpoints">
           {(apiInfo?.endpoints || []).map((ep, i) => (
@@ -88,7 +89,7 @@ function ApiAccess() {
 
       <div className="card">
         <div className="card-title">
-          <span>💻</span> {t.quickStartExample}
+          <I name="code" size={18} /> {t.quickStartExample}
         </div>
         <div className="code-block">
           <div className="code-header">
@@ -110,7 +111,7 @@ function ApiAccess() {
 
 const { jobId } = await res.json();
 console.log("Generation started:", jobId);`, "code")}>
-              {copied === "code" ? "✅" : "📋"}
+              {copied === "code" ? <I name="check" size={14} /> : <I name="copy" size={14} />}
             </button>
           </div>
           <pre className="code-content">{`const res = await fetch("${apiInfo?.baseUrl}/generate", {
@@ -135,26 +136,26 @@ console.log("Generation started:", jobId);`}</pre>
 
       <div className="card">
         <div className="card-title">
-          <span>📊</span> {t.usage}
+          <I name="barChart" size={18} /> {t.usage}
         </div>
         <div className="stats-grid" style={{ marginBottom: 0 }}>
           <div className="stat-card">
-            <div className="stat-icon purple">♾️</div>
+            <div className="stat-icon purple"><I name="infinity" size={20} /></div>
             <div className="stat-value">∞</div>
             <div className="stat-label">{t.requestsPerDay}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-icon cyan">⚡</div>
+            <div className="stat-icon cyan"><I name="zap" size={20} /></div>
             <div className="stat-value">∞</div>
             <div className="stat-label">{t.rateLimit}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-icon pink">🎬</div>
+            <div className="stat-icon pink"><I name="clapperboard" size={20} /></div>
             <div className="stat-value">∞</div>
             <div className="stat-label">{t.videoRenders}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-icon amber">📱</div>
+            <div className="stat-icon amber"><I name="smartphone" size={20} /></div>
             <div className="stat-value">11</div>
             <div className="stat-label">{t.endpoints}</div>
           </div>

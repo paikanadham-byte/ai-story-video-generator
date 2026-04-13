@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { generateSEO, generateThumbnailPrompts } from "../api/client.js";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 function VideoPreview({ result, onReset }) {
   const t = useI18n();
@@ -104,7 +105,7 @@ function VideoPreview({ result, onReset }) {
 
       <div className="card video-card glow">
         <div className="card-title">
-          <span>🎬</span> {script?.title || "Your Video is Ready!"}
+          <I name="clapperboard" size={18} /> {script?.title || "Your Video is Ready!"}
         </div>
 
         <div className="video-wrapper">
@@ -131,7 +132,7 @@ function VideoPreview({ result, onReset }) {
 
         <div className="video-actions">
           <button className="btn btn-primary" onClick={() => handleDownload(videoUrl, `${script?.title || "video"}.mp4`)} disabled={downloading === `${script?.title || "video"}.mp4`}>
-            {downloading ? "⏳" : "⬇️"} {t.downloadMP4}
+            {downloading ? <I name="clock" size={14} /> : <I name="download" size={14} />} {t.downloadMP4}
           </button>
           {subtitlesUrl && (
             <button className="btn btn-secondary" onClick={() => handleDownload(subtitlesUrl, `${script?.title || "subtitles"}.srt`)} disabled={downloading === `${script?.title || "subtitles"}.srt`}>
@@ -147,14 +148,14 @@ function VideoPreview({ result, onReset }) {
       {/* 💎 Direct Upload */}
       <div className="card">
         <div className="card-title">
-          <span>🔗</span> {t.directUpload}
+          <I name="link" size={18} /> {t.directUpload}
           <span className="badge" style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: "var(--gradient-accent)", color: "white", fontWeight: 700, marginLeft: 8 }}>PRO</span>
         </div>
         <div className="upload-platforms">
           {[
-            { id: "youtube", icon: "📺", name: "YouTube", color: "#FF0000" },
-            { id: "tiktok", icon: "🎵", name: "TikTok", color: "#00F2EA" },
-            { id: "instagram", icon: "📸", name: "Instagram", color: "#E1306C" },
+            { id: "youtube", icon: "video", name: "YouTube", color: "#FF0000" },
+            { id: "tiktok", icon: "music", name: "TikTok", color: "#00F2EA" },
+            { id: "instagram", icon: "camera", name: "Instagram", color: "#E1306C" },
           ].map((p) => (
             <button
               key={p.id}
@@ -162,7 +163,7 @@ function VideoPreview({ result, onReset }) {
               onClick={() => handleUpload(p.id)}
               disabled={uploadStatus[p.id] === "uploading"}
             >
-              <span className="platform-icon">{p.icon}</span>
+              <span className="platform-icon"><I name={p.icon} size={18} /></span>
               <span className="platform-name">{p.name}</span>
               <span className="platform-status">
                 {uploadStatus[p.id] === "uploading" ? t.uploadPreparing :
@@ -180,7 +181,7 @@ function VideoPreview({ result, onReset }) {
       {/* 📈 SEO Generator */}
       <div className="card">
         <div className="card-title">
-          <span>📈</span> {t.seoTitle}
+          <I name="barChart" size={18} /> {t.seoTitle}
           <span className="badge" style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: "var(--gradient-accent)", color: "white", fontWeight: 700, marginLeft: 8 }}>PRO</span>
         </div>
         {!seo ? (
@@ -193,7 +194,7 @@ function VideoPreview({ result, onReset }) {
               <div className="seo-field-header">
                 <label>{t.optimizedTitle}</label>
                 <button className="copy-btn" onClick={() => handleCopy(seo.seoTitle, "title")}>
-                  {copied === "title" ? "✅" : "📋"}
+                  {copied === "title" ? <I name="check" size={14} /> : <I name="copy" size={14} />}
                 </button>
               </div>
               <div className="seo-value title">{seo.seoTitle}</div>
@@ -202,7 +203,7 @@ function VideoPreview({ result, onReset }) {
               <div className="seo-field-header">
                 <label>{t.description}</label>
                 <button className="copy-btn" onClick={() => handleCopy(seo.description, "desc")}>
-                  {copied === "desc" ? "✅" : "📋"}
+                  {copied === "desc" ? <I name="check" size={14} /> : <I name="copy" size={14} />}
                 </button>
               </div>
               <div className="seo-value desc">{seo.description}</div>
@@ -211,7 +212,7 @@ function VideoPreview({ result, onReset }) {
               <div className="seo-field-header">
                 <label>{t.tags}</label>
                 <button className="copy-btn" onClick={() => handleCopy((seo.tags || []).join(", "), "tags")}>
-                  {copied === "tags" ? "✅" : "📋"}
+                  {copied === "tags" ? <I name="check" size={14} /> : <I name="copy" size={14} />}
                 </button>
               </div>
               <div className="seo-tags">
@@ -240,7 +241,7 @@ function VideoPreview({ result, onReset }) {
       {/* 🤖 AI Thumbnail Generator */}
       <div className="card">
         <div className="card-title">
-          <span>🤖</span> {t.aiThumbnail}
+          <I name="cpu" size={18} /> {t.aiThumbnail}
           <span className="badge" style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: "var(--gradient-accent)", color: "white", fontWeight: 700, marginLeft: 8 }}>PRO</span>
         </div>
         {!thumbnails ? (
@@ -273,7 +274,7 @@ function VideoPreview({ result, onReset }) {
       {script?.scenes && (
         <div className="card">
           <div className="card-title">
-            <span>📜</span> {t.script} ({script.scenes.length} {t.scene})
+            <I name="fileText" size={18} /> {t.script} ({script.scenes.length} {t.scene})
           </div>
           <div style={{ maxHeight: 400, overflowY: "auto" }}>
             {script.scenes.map((scene) => (
@@ -296,7 +297,7 @@ function VideoPreview({ result, onReset }) {
                   {scene.narration}
                 </div>
                 <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
-                  🎬 {scene.visualDescription}
+                  <I name="clapperboard" size={12} /> {scene.visualDescription}
                 </div>
               </div>
             ))}

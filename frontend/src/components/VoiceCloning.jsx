@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { cloneVoice, getClonedVoices, deleteClonedVoice, previewVoice } from "../api/client.js";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 function VoiceCloning() {
   const t = useI18n();
@@ -133,7 +134,7 @@ function VoiceCloning() {
 
       {error && (
         <div className="error-banner" style={{ marginBottom: 16 }}>
-          <span>⚠️</span>
+          <I name="alert" size={16} />
           <span>{error}</span>
           <button onClick={() => setError(null)} style={{ marginLeft: "auto", background: "none", border: "none", color: "inherit", cursor: "pointer", fontSize: 16 }}>✕</button>
         </div>
@@ -141,7 +142,7 @@ function VoiceCloning() {
 
       <div className="card glow">
         <div className="card-title">
-          <span>🎤</span> {t.voiceSample}
+          <I name="mic" size={18} /> {t.voiceSample}
           <span className="badge" style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: "var(--gradient-accent)", color: "white", fontWeight: 700, marginLeft: 8 }}>PRO</span>
         </div>
 
@@ -155,7 +156,7 @@ function VoiceCloning() {
               onDrop={handleDrop}
               onClick={() => !isRecording && fileRef.current?.click()}
             >
-              <div className="upload-icon">🎙️</div>
+              <div className="upload-icon"><I name="mic" size={36} /></div>
               <div className="upload-title">
                 {isRecording ? `Recording... ${recordingTime}s` : t.uploadVoice}
               </div>
@@ -248,18 +249,18 @@ function VoiceCloning() {
 
       <div className="card">
         <div className="card-title">
-          <span>🗣️</span> {t.yourClonedVoices}
+          <I name="user" size={18} /> {t.yourClonedVoices}
         </div>
         {clonedVoices.length === 0 ? (
           <div style={{ textAlign: "center", padding: "24px 0", color: "var(--text-muted)" }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>🧬</div>
+            <div style={{ fontSize: 36, marginBottom: 8 }}><I name="dna" size={36} /></div>
             <p>{t.noClonedVoices}</p>
           </div>
         ) : (
           <div className="cloned-voices-list">
             {clonedVoices.map((v) => (
               <div key={v.id} className="cloned-voice-card">
-                <div className="voice-avatar">🗣️</div>
+                <div className="voice-avatar"><I name="user" size={20} /></div>
                 <div className="voice-info">
                   <h4>{v.name}</h4>
                   <p>
@@ -282,9 +283,9 @@ function VoiceCloning() {
                     style={{ padding: "6px 12px", fontSize: 12, background: "var(--error)", color: "white", border: "none" }}
                     onClick={() => handleDelete(v.id)}
                   >
-                    🗑️
+                    <I name="trash" size={14} />
                   </button>
-                  <div className="voice-status ready">✅ {t.ready}</div>
+                  <div className="voice-status ready"><I name="check" size={12} /> {t.ready}</div>
                 </div>
               </div>
             ))}
@@ -292,14 +293,14 @@ function VoiceCloning() {
         )}
         {clonedVoices.length > 0 && (
           <div style={{ marginTop: 12, padding: 12, background: "rgba(139, 92, 246, 0.1)", borderRadius: 8, fontSize: 13 }}>
-            💡 <strong>{t.voiceTip}</strong>
+            <I name="lightbulb" size={14} /> <strong>{t.voiceTip}</strong>
           </div>
         )}
       </div>
 
       <div className="card">
         <div className="card-title">
-          <span>💡</span> {t.howVoiceCloningWorks}
+          <I name="lightbulb" size={18} /> {t.howVoiceCloningWorks}
         </div>
         <div className="how-it-works">
           <div className="how-step">

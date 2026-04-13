@@ -1,25 +1,28 @@
 import { useState, useRef } from "react";
 import { io } from "socket.io-client";
-import { uploadVideo, startTransform } from "../api/client.js";
+import { uploadVideo, startTransform, downloadVideoUrl } from "../api/client.js";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 const TOOL_DEFS = [
-  { id: "subtitles", icon: "💬", nameKey: "tool_subtitles", descKey: "tool_subtitlesDesc" },
-  { id: "revoice", icon: "🎙️", nameKey: "tool_revoice", descKey: "tool_revoiceDesc" },
-  { id: "resize", icon: "📐", nameKey: "tool_resize", descKey: "tool_resizeDesc" },
-  { id: "trim", icon: "✂️", nameKey: "tool_trim", descKey: "tool_trimDesc" },
-  { id: "music", icon: "🎵", nameKey: "tool_music", descKey: "tool_musicDesc" },
-  { id: "speed", icon: "⚡", nameKey: "tool_speed", descKey: "tool_speedDesc" },
-  { id: "filter", icon: "🎨", nameKey: "tool_filter", descKey: "tool_filterDesc" },
-  { id: "flip", icon: "🔄", nameKey: "tool_flip", descKey: "tool_flipDesc" },
-  { id: "watermark", icon: "✏️", nameKey: "tool_watermark", descKey: "tool_watermarkDesc" },
-  { id: "volume", icon: "🔊", nameKey: "tool_volume", descKey: "tool_volumeDesc" },
-  { id: "pitch", icon: "🎛️", nameKey: "tool_pitch", descKey: "tool_pitchDesc" },
-  { id: "overlay", icon: "🖼️", nameKey: "tool_overlay", descKey: "tool_overlayDesc" },
-  { id: "transition", icon: "🔀", nameKey: "tool_transition", descKey: "tool_transitionDesc" },
-  { id: "voicechanger", icon: "🗣️", nameKey: "tool_voicechanger", descKey: "tool_voicechangerDesc" },
-  { id: "watermark_remove", icon: "🧹", nameKey: "tool_watermark_remove", descKey: "tool_watermark_removeDesc" },
-  { id: "bg_remove", icon: "🖼️", nameKey: "tool_bg_remove", descKey: "tool_bg_removeDesc" },
+  { id: "subtitles", icon: "type", nameKey: "tool_subtitles", descKey: "tool_subtitlesDesc" },
+  { id: "revoice", icon: "mic", nameKey: "tool_revoice", descKey: "tool_revoiceDesc" },
+  { id: "resize", icon: "monitor", nameKey: "tool_resize", descKey: "tool_resizeDesc" },
+  { id: "trim", icon: "scissors", nameKey: "tool_trim", descKey: "tool_trimDesc" },
+  { id: "music", icon: "music", nameKey: "tool_music", descKey: "tool_musicDesc" },
+  { id: "speed", icon: "zap", nameKey: "tool_speed", descKey: "tool_speedDesc" },
+  { id: "filter", icon: "palette", nameKey: "tool_filter", descKey: "tool_filterDesc" },
+  { id: "flip", icon: "rotate", nameKey: "tool_flip", descKey: "tool_flipDesc" },
+  { id: "watermark", icon: "pen", nameKey: "tool_watermark", descKey: "tool_watermarkDesc" },
+  { id: "volume", icon: "volume", nameKey: "tool_volume", descKey: "tool_volumeDesc" },
+  { id: "pitch", icon: "sliders", nameKey: "tool_pitch", descKey: "tool_pitchDesc" },
+  { id: "overlay", icon: "layers", nameKey: "tool_overlay", descKey: "tool_overlayDesc" },
+  { id: "transition", icon: "shuffle", nameKey: "tool_transition", descKey: "tool_transitionDesc" },
+  { id: "voicechanger", icon: "user", nameKey: "tool_voicechanger", descKey: "tool_voicechangerDesc" },
+  { id: "watermark_remove", icon: "eraser", nameKey: "tool_watermark_remove", descKey: "tool_watermark_removeDesc" },
+  { id: "bg_remove", icon: "image", nameKey: "tool_bg_remove", descKey: "tool_bg_removeDesc" },
 ];
 
 const PLATFORMS = [
@@ -89,14 +92,25 @@ function VideoEditor() {
     handleFile(file);
   };
 
-  const handleUrlLoad = () => {
+  const handleUrlLoad = async () => {
     if (!urlInput.trim()) return;
     setVideoSrc(urlInput.trim());
     setFileName(urlInput.trim().split("/").pop() || "External video");
     setVideoUrl(urlInput.trim());
-    setServerPath(null); // URL-based, no server upload
     setError(null);
     setResultUrl(null);
+
+    // Download URL to server so transforms work
+    setUploading(true);
+    try {
+      const result = await downloadVideoUrl(urlInput.trim());
+      setServerPath(result.path);
+    } catch (err) {
+      setError("Failed to download video: " + err.message);
+      setServerPath(null);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const getToolOptions = () => {
@@ -138,7 +152,7 @@ function VideoEditor() {
       const { jobId } = await startTransform(serverPath, [activeTool], options);
 
       // Listen for progress via WebSocket
-      const socket = io({ transports: ["websocket", "polling"] });
+      const socket = io(BACKEND_URL || undefined, { transports: ["websocket", "polling"] });
       socket.on("connect", () => socket.emit("subscribe", jobId));
 
       socket.on("progress", (data) => {
@@ -183,7 +197,7 @@ function VideoEditor() {
 
       {error && (
         <div className="error-banner">
-          <span>⚠️</span>
+          <span><I name="alert" size={16} /></span>
           <span>{error}</span>
         </div>
       )}
@@ -196,7 +210,7 @@ function VideoEditor() {
           onDrop={handleDrop}
           onClick={() => fileRef.current?.click()}
         >
-          <div className="upload-icon">📁</div>
+          <div className="upload-icon"><I name="folder" size={40} /></div>
           <div className="upload-title">{t.dropVideo}</div>
           <div className="upload-subtitle">{t.dropVideoSub}</div>
 
@@ -258,7 +272,7 @@ function VideoEditor() {
           {/* Tools Grid */}
           {!processing && (
             <div className="card">
-              <div className="card-title"><span>🛠️</span> {t.editingTools}</div>
+              <div className="card-title"><I name="wrench" size={18} /> {t.editingTools}</div>
               <div className="editor-tools-grid">
                 {TOOL_DEFS.map((tool) => (
                   <button
@@ -266,7 +280,7 @@ function VideoEditor() {
                     className={`editor-tool-card ${activeTool === tool.id ? "active" : ""}`}
                     onClick={() => setActiveTool(tool.id === activeTool ? null : tool.id)}
                   >
-                    <div className="tool-icon">{tool.icon}</div>
+                    <div className="tool-icon"><I name={tool.icon} size={24} /></div>
                     <div className="tool-name">{t[tool.nameKey]}</div>
                     <div className="tool-desc">{t[tool.descKey]}</div>
                   </button>
@@ -279,7 +293,7 @@ function VideoEditor() {
           {activeTool && !processing && (
             <div className="card glow">
               <div className="card-title">
-                <span>{TOOL_DEFS.find(tl => tl.id === activeTool)?.icon}</span>
+                <I name={TOOL_DEFS.find(tl => tl.id === activeTool)?.icon} size={18} />
                 {t[TOOL_DEFS.find(tl => tl.id === activeTool)?.nameKey]} — {t.toolSettings}
               </div>
 

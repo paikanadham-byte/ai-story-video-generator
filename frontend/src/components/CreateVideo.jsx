@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getStoryIdeas, getLanguages, getClonedVoices } from "../api/client.js";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 const CONTENT_TYPES = [
   { id: "story", labelKey: "ct_story" },
@@ -60,27 +61,27 @@ const MUSIC_MOODS = [
 ];
 
 const LANGUAGES = [
-  { code: "en", name: "🇺🇸 English" },
-  { code: "fa", name: "🇮🇷 Persian (فارسی)" },
-  { code: "es", name: "🇪🇸 Spanish" },
-  { code: "fr", name: "🇫🇷 French" },
-  { code: "de", name: "🇩🇪 German" },
-  { code: "hi", name: "🇮🇳 Hindi" },
-  { code: "ar", name: "🇸🇦 Arabic" },
-  { code: "pt", name: "🇧🇷 Portuguese" },
-  { code: "ja", name: "🇯🇵 Japanese" },
-  { code: "ko", name: "🇰🇷 Korean" },
-  { code: "zh", name: "🇨🇳 Chinese" },
-  { code: "it", name: "🇮🇹 Italian" },
-  { code: "ru", name: "🇷🇺 Russian" },
-  { code: "tr", name: "🇹🇷 Turkish" },
-  { code: "nl", name: "🇳🇱 Dutch" },
-  { code: "pl", name: "🇵🇱 Polish" },
-  { code: "sv", name: "🇸🇪 Swedish" },
-  { code: "th", name: "🇹🇭 Thai" },
-  { code: "vi", name: "🇻🇳 Vietnamese" },
-  { code: "id", name: "🇮🇩 Indonesian" },
-  { code: "uk", name: "🇺🇦 Ukrainian" },
+  { code: "en", name: "English" },
+  { code: "fa", name: "Persian (فارسی)" },
+  { code: "es", name: "Spanish" },
+  { code: "fr", name: "French" },
+  { code: "de", name: "German" },
+  { code: "hi", name: "Hindi" },
+  { code: "ar", name: "Arabic" },
+  { code: "pt", name: "Portuguese" },
+  { code: "ja", name: "Japanese" },
+  { code: "ko", name: "Korean" },
+  { code: "zh", name: "Chinese" },
+  { code: "it", name: "Italian" },
+  { code: "ru", name: "Russian" },
+  { code: "tr", name: "Turkish" },
+  { code: "nl", name: "Dutch" },
+  { code: "pl", name: "Polish" },
+  { code: "sv", name: "Swedish" },
+  { code: "th", name: "Thai" },
+  { code: "vi", name: "Vietnamese" },
+  { code: "id", name: "Indonesian" },
+  { code: "uk", name: "Ukrainian" },
 ];
 
 const PLATFORMS = [
@@ -157,14 +158,14 @@ function CreateVideo({ onGenerate, error }) {
 
       {error && (
         <div className="error-banner">
-          <span>⚠️</span>
+          <I name="alert" size={16} />
           <span>{error}</span>
         </div>
       )}
 
       {/* Content Type */}
       <div className="card">
-        <div className="card-title"><span>🎯</span> {t.contentType}</div>
+        <div className="card-title"><I name="target" size={18} /> {t.contentType}</div>
         <div className="option-grid">
           {CONTENT_TYPES.map((ct) => (
             <button
@@ -181,7 +182,7 @@ function CreateVideo({ onGenerate, error }) {
       {/* Story Input */}
       <div className="card">
         <div className="card-title">
-          <span>✍️</span> {contentType === "story" ? t.storyIdea : t.videoDescription}
+          <I name="pen" size={18} /> {contentType === "story" ? t.storyIdea : t.videoDescription}
         </div>
         <div className="form-group">
           <textarea
@@ -237,7 +238,7 @@ function CreateVideo({ onGenerate, error }) {
 
       {/* Genre */}
       <div className="card">
-        <div className="card-title"><span>🎭</span> {t.genre}</div>
+        <div className="card-title"><I name="clapperboard" size={18} /> {t.genre}</div>
         <div className="option-grid">
           {GENRES.map((g) => (
             <button
@@ -253,7 +254,7 @@ function CreateVideo({ onGenerate, error }) {
 
       {/* Platform / Aspect Ratio */}
       <div className="card">
-        <div className="card-title"><span>📐</span> {t.platformSize}</div>
+        <div className="card-title"><I name="monitor" size={18} /> {t.platformSize}</div>
         <div className="option-grid">
           {PLATFORMS.map((p) => (
             <button
@@ -269,7 +270,7 @@ function CreateVideo({ onGenerate, error }) {
 
       {/* Settings */}
       <div className="card">
-        <div className="card-title"><span>⚙️</span> {t.settingsTitle}</div>
+        <div className="card-title"><I name="settings" size={18} /> {t.settingsTitle}</div>
 
         <div className="options-row">
           <div className="form-group">
@@ -277,7 +278,7 @@ function CreateVideo({ onGenerate, error }) {
             <select className="select-input" value={voiceStyle} onChange={(e) => setVoiceStyle(e.target.value)}>
               {VOICES.map((v) => <option key={v.id} value={v.id}>{t[v.labelKey]}</option>)}
               {clonedVoices.length > 0 && <option disabled>{t.clonedVoices}</option>}
-              {clonedVoices.map((v) => <option key={v.id} value={v.id}>🧬 {v.name}</option>)}
+              {clonedVoices.map((v) => <option key={v.id} value={v.id}>{v.name}</option>)}
             </select>
           </div>
           <div className="form-group">
@@ -310,13 +311,13 @@ function CreateVideo({ onGenerate, error }) {
 
         <div className="options-row">
           <div className="form-group">
-            <label className="form-label">🌐 {t.language}</label>
+            <label className="form-label"><I name="globe" size={14} /> {t.language}</label>
             <select className="select-input" value={language} onChange={(e) => setLanguage(e.target.value)}>
               {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label">🚀 {t.priorityRendering}</label>
+            <label className="form-label"><I name="rocket" size={14} /> {t.priorityRendering}</label>
             <button
               className={`option-button ${priorityRender ? "active" : ""}`}
               onClick={() => setPriorityRender(!priorityRender)}

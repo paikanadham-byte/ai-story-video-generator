@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { separateVocals } from "../api/client.js";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
@@ -85,7 +86,7 @@ function VocalRemover() {
 
       {error && (
         <div className="error-banner">
-          <span>⚠️</span> {error}
+          <I name="alert" size={16} /> {error}
         </div>
       )}
 
@@ -94,7 +95,7 @@ function VocalRemover() {
           {/* Upload Zone */}
           <div className="card">
             <div className="card-title">
-              <span>🎵</span> {t.uploadAudio}
+              <I name="music" size={18} /> {t.uploadAudio}
             </div>
             <div
               className={`editor-upload-zone ${dragging ? "dragging" : ""}`}
@@ -110,14 +111,14 @@ function VocalRemover() {
                 accept="audio/*,video/*"
                 onChange={handleFileSelect}
               />
-              <div className="upload-icon">🎤</div>
+              <div className="upload-icon"><I name="mic" size={36} /></div>
               <div className="upload-title">{t.vocalUploadTitle}</div>
               <div className="upload-subtitle">{t.vocalUploadSubtitle}</div>
             </div>
 
             {file && (
               <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--bg-input)", borderRadius: "var(--radius-sm)", border: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 24 }}>🎵</span>
+                <span style={{ fontSize: 24 }}><I name="music" size={24} /></span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 700 }}>{file.name}</div>
                   <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{formatSize(file.size)}</div>
@@ -143,7 +144,7 @@ function VocalRemover() {
           {/* How It Works */}
           <div className="card">
             <div className="card-title">
-              <span>ℹ️</span> {t.howItWorks}
+              <I name="info" size={18} /> {t.howItWorks}
             </div>
             <div className="how-it-works">
               <div className="how-step">
@@ -175,7 +176,7 @@ function VocalRemover() {
           {/* Results */}
           <div className="card glow" style={{ textAlign: "center" }}>
             <div className="card-title" style={{ justifyContent: "center" }}>
-              <span>✅</span> {t.vocalSeparationComplete}
+              <I name="check" size={18} /> {t.vocalSeparationComplete}
             </div>
             <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 24 }}>
               {t.vocalSeparationDesc}
@@ -184,7 +185,7 @@ function VocalRemover() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
               {/* Vocals Card */}
               <div style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 20, textAlign: "center" }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}>🎤</div>
+                <div style={{ fontSize: 36, marginBottom: 8 }}><I name="mic" size={36} /></div>
                 <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{t.vocalsTrack}</h3>
                 <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 14 }}>{t.vocalsTrackDesc}</p>
                 <audio controls src={`${BACKEND_URL}${result.vocals}`} style={{ width: "100%", marginBottom: 12 }} />
@@ -193,13 +194,13 @@ function VocalRemover() {
                   style={{ width: "100%" }}
                   onClick={() => handleDownload(result.vocals, `${file?.name?.replace(/\.[^.]+$/, "")}_vocals.mp3`)}
                 >
-                  ⬇️ {t.downloadVocals}
+                  <I name="download" size={14} /> {t.downloadVocals}
                 </button>
               </div>
 
               {/* Instrumental Card */}
               <div style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 20, textAlign: "center" }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}>🎸</div>
+                <div style={{ fontSize: 36, marginBottom: 8 }}><I name="guitar" size={36} /></div>
                 <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{t.instrumentalTrack}</h3>
                 <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 14 }}>{t.instrumentalTrackDesc}</p>
                 <audio controls src={`${BACKEND_URL}${result.instrumental}`} style={{ width: "100%", marginBottom: 12 }} />
@@ -208,7 +209,7 @@ function VocalRemover() {
                   style={{ width: "100%" }}
                   onClick={() => handleDownload(result.instrumental, `${file?.name?.replace(/\.[^.]+$/, "")}_instrumental.mp3`)}
                 >
-                  ⬇️ {t.downloadInstrumental}
+                  <I name="download" size={14} /> {t.downloadInstrumental}
                 </button>
               </div>
             </div>

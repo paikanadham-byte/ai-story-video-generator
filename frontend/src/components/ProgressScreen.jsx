@@ -1,4 +1,5 @@
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 function ProgressScreen({ progress, currentStep, detail, completedSteps, steps, stepLabels }) {
   const t = useI18n();
@@ -30,7 +31,7 @@ function ProgressScreen({ progress, currentStep, detail, completedSteps, steps, 
               key={step}
               className={`step-pill ${isDone ? "done" : ""} ${isActive ? "active" : ""}`}
             >
-              {isDone ? "✓ " : ""}{stepLabels[step]}
+              {isDone ? <><I name="check" size={12} /> </> : ""}{stepLabels[step]}
             </span>
           );
         })}

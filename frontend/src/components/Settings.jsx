@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../utils/supabase.js";
 import { useI18n } from "../utils/i18n.js";
+import I from "./Icons.jsx";
 
 const APP_LANGUAGES = [
   { code: "en", name: "English", dir: "ltr" },
@@ -40,7 +41,7 @@ function Settings({ user, onSignOut, appLang, onChangeLang, appTheme, onChangeTh
 
       {/* Profile */}
       <div className="card">
-        <div className="card-title"><span>👤</span> {t.profile}</div>
+        <div className="card-title"><I name="user" size={18} /> {t.profile}</div>
         <div className="settings-profile">
           <div className="settings-avatar">
             {avatar ? (
@@ -53,7 +54,7 @@ function Settings({ user, onSignOut, appLang, onChangeLang, appTheme, onChangeTh
             <h3>{displayName}</h3>
             <p>{email}</p>
             <span className="settings-provider-badge">
-              {provider === "google" ? "🔗 Google" : provider === "github" ? "🔗 GitHub" : "📧 Email"}
+              {provider === "google" ? <><I name="link" size={12} /> Google</> : provider === "github" ? <><I name="link" size={12} /> GitHub</> : <><I name="mail" size={12} /> Email</>}
             </span>
           </div>
         </div>
@@ -61,7 +62,7 @@ function Settings({ user, onSignOut, appLang, onChangeLang, appTheme, onChangeTh
 
       {/* App Language */}
       <div className="card">
-        <div className="card-title"><span>🌐</span> {t.appLanguage}</div>
+        <div className="card-title"><I name="globe" size={18} /> {t.appLanguage}</div>
         <p style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 14 }}>
           {t.appLanguageDesc}
         </p>
@@ -80,7 +81,7 @@ function Settings({ user, onSignOut, appLang, onChangeLang, appTheme, onChangeTh
 
       {/* Theme */}
       <div className="card">
-        <div className="card-title"><span>🎨</span> {t.theme}</div>
+        <div className="card-title"><I name="palette" size={18} /> {t.theme}</div>
         <div className="theme-toggle-grid">
           <button
             className={`theme-btn ${appTheme === "dark" ? "active" : ""}`}
@@ -99,7 +100,7 @@ function Settings({ user, onSignOut, appLang, onChangeLang, appTheme, onChangeTh
 
       {/* Logout */}
       <div className="card">
-        <div className="card-title"><span>🚪</span> {t.account}</div>
+        <div className="card-title"><I name="logOut" size={18} /> {t.account}</div>
         {!confirmLogout ? (
           <button className="btn settings-logout-btn" onClick={() => setConfirmLogout(true)}>
             {t.signOut}
