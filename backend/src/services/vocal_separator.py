@@ -82,17 +82,29 @@ def normalise(stereo_arr):
 def beat_spectrum(S):
     """
     Compute beat spectrum from a magnitude spectrogram S (freq × time).
-    Returns the mean normalised autocorrelation across frequency bands.
+    Returns normalized autocorrelation up to MAX_PERIOD_FRAMES lags.
+    Uses sub-band averaging to stay O(n_bands * max_lag * T) — fast for any length.
     """
-    S_norm  = S / (np.linalg.norm(S, axis=1, keepdims=True) + 1e-8)
-    # Full autocorrelation for each frequency bin via FFT
-    n_fft   = 2 ** int(np.ceil(np.log2(2 * S_norm.shape[1] - 1)))
-    S_fft   = np.fft.rfft(S_norm, n=n_fft, axis=1)
-    acorr   = np.fft.irfft(S_fft * np.conj(S_fft), axis=1)[:, :S_norm.shape[1]]
-    # Average over frequency bins → 1-D beat spectrum
-    bs      = acorr.mean(axis=0)
-    # Normalise by zero-lag
-    bs     /= bs[0] + 1e-8
+    freq_bins, T = S.shape
+    max_lag = min(MAX_PERIOD_FRAMES + 1, T // 2)
+
+    # Average into sub-bands to reduce noise and computation
+    n_bands = 32
+    step = max(1, freq_bins // n_bands)
+    bands = np.array([S[i:i + step].mean(axis=0) for i in range(0, freq_bins, step)])  # (n_bands, T)
+
+    # Zero-mean + unit-std per band
+    bands -= bands.mean(axis=1, keepdims=True)
+    bands /= (bands.std(axis=1, keepdims=True) + 1e-8)
+
+    # Vectorised lag-by-lag autocorrelation (no O(T²) FFT over whole T)
+    bs = np.zeros(max_lag)
+    bs[0] = 1.0
+    for lag in range(1, max_lag):
+        bs[lag] = float(np.mean(bands[:, :T - lag] * bands[:, lag:]))
+
+    bs = np.clip(bs, 0, None)          # keep positive correlations only
+    bs /= bs[0] + 1e-8
     return bs
 
 
@@ -127,12 +139,14 @@ def repet_mask(S):
 
     print(f"[SEP] Detected repeating period: {period} frames", flush=True)
 
-    # Build repeating model: for each column t, median of columns
-    # at t − k·period, t, t + k·period  (all valid indices)
+    # Build repeating model: group columns by residue class (t % period).
+    # All columns in the same class get the same median spectrum.
+    # This is O(period * freq_bins * (T/period)) instead of O(T * freq_bins * (T/period)).
     model = np.zeros_like(S)
-    for t in range(T):
-        indices = list(range(t % period, T, period))
-        model[:, t] = np.median(S[:, indices], axis=1)
+    for r in range(period):
+        indices = np.arange(r, T, period)
+        col_median = np.median(S[:, indices], axis=1)    # (freq_bins,)
+        model[:, indices] = col_median[:, np.newaxis]    # broadcast to all columns in class
 
     # Soft mask: where model ≈ S, content is repeating (instruments)
     instr_mask = (model ** REPET_MASK_POWER) / (
