@@ -22,7 +22,7 @@ const MODELS = [
   { id: "flux", label: "AI Art", desc: "Creative & artistic" },
   { id: "flux-3d", label: "3D Render", desc: "3D CGI style" },
   { id: "flux-anime", label: "Anime", desc: "Japanese anime style" },
-  { id: "any-dark", label: "Dark Cinematic", desc: "Moody & dramatic" },
+  { id: "flux", label: "Dark Cinematic", desc: "Moody & dramatic" },
   { id: "turbo", label: "Turbo (Fast)", desc: "Quick generation" },
 ];
 
@@ -62,6 +62,7 @@ function ThumbnailMaker() {
   const [imageLoading, setImageLoading] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [seed, setSeed] = useState(() => Math.floor(Math.random() * 99999));
 
   const buildPrompt = () => {
@@ -71,7 +72,15 @@ function ThumbnailMaker() {
     return `Professional YouTube thumbnail ${titlePart}${mood}, highly detailed, vibrant striking composition, thumbnail aspect ratio 16:9, no text, photographic quality`;
   };
 
-  const handleGenerate = () => {
+  const buildUrl = (overrideModel, overrideSeed) => {
+    const prompt = buildPrompt();
+    const m = overrideModel || model;
+    const s = overrideSeed ?? Math.floor(Math.random() * 99999);
+    const encoded = encodeURIComponent(prompt);
+    return { url: `https://image.pollinations.ai/prompt/${encoded}?model=${m}&width=1280&height=720&seed=${s}&nologo=true&enhance=true`, seed: s };
+  };
+
+  const handleGenerate = (overrideModel) => {
     const prompt = buildPrompt();
     if (!prompt.trim()) {
       setError("Please enter a title or custom prompt");
@@ -79,13 +88,27 @@ function ThumbnailMaker() {
     }
     const newSeed = Math.floor(Math.random() * 99999);
     setSeed(newSeed);
+    setRetryCount(0);
     setGenerating(true);
     setImageLoading(true);
     setError(null);
-    const encoded = encodeURIComponent(prompt);
-    const url = `https://image.pollinations.ai/prompt/${encoded}?model=${model}&width=1280&height=720&seed=${newSeed}&nologo=true`;
+    const { url } = buildUrl(overrideModel, newSeed);
     setThumbnailUrl(url);
     setGenerating(false);
+  };
+
+  const handleImageError = () => {
+    if (retryCount < 2) {
+      // Auto retry with a different seed
+      setRetryCount((c) => c + 1);
+      const newSeed = Math.floor(Math.random() * 99999);
+      setSeed(newSeed);
+      const { url } = buildUrl(undefined, newSeed);
+      setThumbnailUrl(url);
+    } else {
+      setImageLoading(false);
+      setError("Generation failed after 3 attempts. Please try a different title or style.");
+    }
   };
 
   const handleDownload = async () => {
@@ -275,8 +298,8 @@ function ThumbnailMaker() {
                   src={thumbnailUrl}
                   alt="Generated thumbnail"
                   style={{ width: "100%", display: "block", borderRadius: 12, opacity: imageLoading ? 0 : 1, transition: "opacity 0.3s" }}
-                  onLoad={() => setImageLoading(false)}
-                  onError={() => { setImageLoading(false); setError("Failed to generate thumbnail. Please try again."); }}
+                  onLoad={() => { setImageLoading(false); setRetryCount(0); }}
+                  onError={handleImageError}
                 />
 
                 {/* Text overlay preview */}
@@ -334,13 +357,13 @@ function ThumbnailMaker() {
                 {[
                   { modelId: "flux-realism", label: "Realistic" },
                   { modelId: "flux-3d", label: "3D Style" },
-                  { modelId: "any-dark", label: "Dark Mode" },
+                  { modelId: "flux-anime", label: "Anime" },
                 ].map((v) => (
                   <button
                     key={v.modelId}
                     className="btn btn-secondary"
                     style={{ fontSize: 11, padding: "8px 10px" }}
-                    onClick={() => { setModel(v.modelId); handleGenerate(); }}
+                    onClick={() => { setModel(v.modelId); handleGenerate(v.modelId); }}
                     disabled={imageLoading}
                   >
                     {v.label}

@@ -7,7 +7,7 @@ const STYLES = [
   { id: "flux",          label: "AI Art",           desc: "Creative & artistic",  emoji: "🎨" },
   { id: "flux-3d",       label: "3D Render",        desc: "3D CGI style",         emoji: "🎮" },
   { id: "flux-anime",    label: "Anime",            desc: "Japanese anime",       emoji: "🌸" },
-  { id: "any-dark",      label: "Dark Fantasy",     desc: "Moody & dark",         emoji: "🌑" },
+  { id: "sana",          label: "Sana",             desc: "High detail AI",       emoji: "✨" },
   { id: "turbo",         label: "Turbo",            desc: "Fastest generation",   emoji: "⚡" },
 ];
 
@@ -39,6 +39,7 @@ function ImageCreator() {
   const [imageUrl, setImageUrl] = useState(null);
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [seed, setSeed] = useState(() => Math.floor(Math.random() * 999999));
   const [lockedSeed, setLockedSeed] = useState(false);
 
@@ -51,7 +52,7 @@ function ImageCreator() {
     return base;
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = (overrideStyle) => {
     const finalPrompt = buildFinalPrompt();
     if (!finalPrompt) {
       setError("Please enter an image prompt first");
@@ -64,12 +65,29 @@ function ImageCreator() {
     setGenerating(true);
     setImageLoading(true);
     setError(null);
+    setRetryCount(0);
 
+    const activeStyle = overrideStyle || style;
     const encoded = encodeURIComponent(finalPrompt);
     const negEnc = negativePrompt.trim() ? `&negative=${encodeURIComponent(negativePrompt.trim())}` : "";
-    const url = `https://image.pollinations.ai/prompt/${encoded}?model=${style}&width=${w}&height=${h}&seed=${newSeed}&nologo=true${negEnc}`;
+    const url = `https://image.pollinations.ai/prompt/${encoded}?model=${activeStyle}&width=${w}&height=${h}&seed=${newSeed}&nologo=true&enhance=true${negEnc}`;
     setImageUrl(url);
     setGenerating(false);
+  };
+
+  const handleImageError = () => {
+    if (retryCount < 2) {
+      setRetryCount((c) => c + 1);
+      const newSeed = Math.floor(Math.random() * 999999);
+      setSeed(newSeed);
+      const { w, h } = getSizeConfig();
+      const encoded = encodeURIComponent(buildFinalPrompt());
+      const url = `https://image.pollinations.ai/prompt/${encoded}?model=${style}&width=${w}&height=${h}&seed=${newSeed}&nologo=true&enhance=true`;
+      setImageUrl(url);
+    } else {
+      setImageLoading(false);
+      setError("Generation failed after 3 attempts. Try a different prompt or style.");
+    }
   };
 
   const handleDownload = async () => {
@@ -283,7 +301,7 @@ function ImageCreator() {
                   alt="AI generated image"
                   style={{ width: "100%", display: "block", borderRadius: 12, opacity: imageLoading ? 0 : 1, transition: "opacity 0.4s" }}
                   onLoad={handleImageLoaded}
-                  onError={() => { setImageLoading(false); setError("Generation failed. Check your prompt and try again."); }}
+                  onError={handleImageError}
                 />
               </div>
 
@@ -314,7 +332,7 @@ function ImageCreator() {
                           key={s.id}
                           className="btn btn-secondary"
                           style={{ fontSize: 11, padding: "7px 12px" }}
-                          onClick={() => { setStyle(s.id); handleGenerate(); }}
+                          onClick={() => { setStyle(s.id); handleGenerate(s.id); }}
                         >
                           {s.emoji} {s.label}
                         </button>
