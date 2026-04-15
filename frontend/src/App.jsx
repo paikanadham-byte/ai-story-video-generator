@@ -14,6 +14,8 @@ import ApiAccess from "./components/ApiAccess.jsx";
 import VoiceCloning from "./components/VoiceCloning.jsx";
 import VocalRemover from "./components/VocalRemover.jsx";
 import ImageEnhancer from "./components/ImageEnhancer.jsx";
+import ThumbnailMaker from "./components/ThumbnailMaker.jsx";
+import ImageCreator from "./components/ImageCreator.jsx";
 import AuthPage from "./components/AuthPage.jsx";
 import Settings from "./components/Settings.jsx";
 import Feedback from "./components/Feedback.jsx";
@@ -173,6 +175,8 @@ function App() {
     if (page === "copyright") return <CopyrightTransformer />;
     if (page === "vocal-remover") return <VocalRemover />;
     if (page === "image-enhance") return <ImageEnhancer />;
+    if (page === "thumbnail-maker") return <ThumbnailMaker />;
+    if (page === "image-creator") return <ImageCreator />;
     if (page === "pro") return <ProFeatures />;
     if (page === "api") return <ApiAccess />;
     if (page === "voice-clone") return <VoiceCloning />;

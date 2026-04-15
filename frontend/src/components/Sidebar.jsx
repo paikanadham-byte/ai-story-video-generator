@@ -71,6 +71,16 @@ function Sidebar({ activePage, onNavigate, user, onSignOut, mobileOpen, onCloseM
           <span className="nav-badge">{t.new}</span>
         </button>
 
+        <button className={`nav-item ${activePage === "thumbnail-maker" ? "active" : ""}`} onClick={() => nav("thumbnail-maker")}>
+          <span className="nav-icon"><I name="image" /></span> {t.thumbnailMaker}
+          <span className="nav-badge">{t.new}</span>
+        </button>
+
+        <button className={`nav-item ${activePage === "image-creator" ? "active" : ""}`} onClick={() => nav("image-creator")}>
+          <span className="nav-icon"><I name="sparkles" /></span> {t.imageCreator}
+          <span className="nav-badge">{t.new}</span>
+        </button>
+
         <div className="nav-section-label">{t.proFeatures}</div>
 
         <button className={`nav-item ${activePage === "voice-clone" ? "active" : ""}`} onClick={() => nav("voice-clone")}>

@@ -4,6 +4,8 @@ import { uploadVideo, startTransform, downloadVideoUrl } from "../api/client.js"
 import { useI18n } from "../utils/i18n.js";
 import I from "./Icons.jsx";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+
 const TRANSFORM_DEFS = [
   { id: "revoice", icon: "mic", titleKey: "ct_revoice", descKey: "ct_revoiceDesc" },
   { id: "mirror", icon: "flipHorizontal", titleKey: "ct_mirror", descKey: "ct_mirrorDesc" },
@@ -107,7 +109,7 @@ function CopyrightTransformer() {
       const { jobId } = await startTransform(serverPath, selected, options);
 
       // Listen for progress via WebSocket
-      const socket = io({ transports: ["websocket", "polling"] });
+      const socket = io(BACKEND_URL || undefined, { transports: ["websocket", "polling"] });
       socket.on("connect", () => socket.emit("subscribe", jobId));
 
       socket.on("progress", (data) => {

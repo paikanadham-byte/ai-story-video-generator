@@ -254,6 +254,14 @@ const translations = {
  enhBefore: "BEFORE", enhAfter: "AFTER",
  enhDownload: "Download Enhanced", enhEnhanceAnother: "Enhance Another Image",
  theme: "Theme", darkMode: "Dark", lightMode: "Light", themeComingSoon: "(Coming Soon)",
+ thumbnailMaker: "AI Thumbnail Maker",
+ thumbnailMakerDesc: "Generate stunning click-worthy YouTube thumbnails with AI — free, no account needed",
+ imageCreator: "AI Image Creator",
+ imageCreatorDesc: "Create any image from text using Pollinations AI — free, unlimited, no API key",
+ feat_thumbnailMaker: "AI Thumbnail Maker",
+ feat_thumbnailMakerDesc: "Generate eye-catching YouTube thumbnails from text or video title — powered by Pollinations AI",
+ feat_imageCreator: "AI Image Creator",
+ feat_imageCreatorDesc: "Create stunning images from any text prompt for free using Pollinations AI image generation",
  },
 
  fa: {
@@ -477,6 +485,10 @@ const translations = {
  enhBefore: "قبل", enhAfter: "بعد",
  enhDownload: "دانلود بهبودیافته", enhEnhanceAnother: "بهبود تصویر دیگر",
  theme: "پوسته", darkMode: "تیره", lightMode: "روشن", themeComingSoon: "(به‌زودی)",
+ thumbnailMaker: "ساخت تامبنیل هوشمند",
+ thumbnailMakerDesc: "تولید تامبنیل‌های جذاب برای یوتیوب با هوش مصنوعی — رایگان",
+ imageCreator: "ساخت تصویر با هوش مصنوعی",
+ imageCreatorDesc: "ساخت هر تصویری از متن با Pollinations AI — رایگان، بدون نیاز به اکانت",
  },
 
  ar: {
@@ -693,6 +705,10 @@ const translations = {
  enhBefore: "قبل", enhAfter: "بعد",
  enhDownload: "تحميل المحسّنة", enhEnhanceAnother: "تحسين صورة أخرى",
  theme: "السمة", darkMode: "داكن", lightMode: "فاتح", themeComingSoon: "(قريبًا)",
+ thumbnailMaker: "صانع الصور المصغرة بالذكاء الاصطناعي",
+ thumbnailMakerDesc: "إنشاء صور مصغرة احترافية لليوتيوب بالذكاء الاصطناعي — مجانًا",
+ imageCreator: "منشئ الصور بالذكاء الاصطناعي",
+ imageCreatorDesc: "إنشاء أي صورة من النص باستخدام Pollinations AI — مجانًا تمامًا",
  },
 };
 

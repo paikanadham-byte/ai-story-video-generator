@@ -63,6 +63,16 @@ function Dashboard({ onNavigate }) {
           <h3>{t.imageEnhancer}</h3>
           <p>{t.imageEnhancerDesc}</p>
         </button>
+        <button className="quick-action" onClick={() => onNavigate("thumbnail-maker")}>
+          <div className="quick-action-icon"><I name="image" size={26} /></div>
+          <h3>{t.thumbnailMaker}</h3>
+          <p>{t.thumbnailMakerDesc}</p>
+        </button>
+        <button className="quick-action" onClick={() => onNavigate("image-creator")}>
+          <div className="quick-action-icon"><I name="sparkles" size={26} /></div>
+          <h3>{t.imageCreator}</h3>
+          <p>{t.imageCreatorDesc}</p>
+        </button>
       </div>
 
       <div className="page-header" style={{ marginBottom: 16 }}>
