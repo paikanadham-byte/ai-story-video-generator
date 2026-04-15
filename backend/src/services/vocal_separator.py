@@ -1,25 +1,67 @@
 #!/usr/bin/env python3
 """
-High-quality vocal / instrumental separator using a two-stage algorithm:
+Vocal / instrumental separator — two execution paths:
 
-Stage 1 — REPET (Repeating Pattern Extraction Technique):
-  Music instruments repeat (verse/chorus cycles). Vocals don't.
-  Find the dominant repeating period in the spectrogram, build a median
-  repeating model for each frequency band, and soft-mask it out.
+PRIMARY (AI): audio-separator + MDX-Net ONNX (UVR models, SDR ~12)
+  Requires: pip3.12 install "audio-separator[cpu]"
+  Install Python 3.12 first: brew install python@3.12
 
-Stage 2 — Center-channel refinement (Mid/Side):
-  After REPET, vocals that remain are typically center-panned while
-  residual instrument bleed is spread wider. A second Wiener soft-mask
-  refines the separation using stereo correlation.
+FALLBACK (DSP): REPET + Mid/Side spectral masking (SDR ~7)
+  Requires: numpy, scipy, soundfile (already installed)
 
-Net result: dramatically less vocal bleed in the instrumental track vs.
-simple phase-cancellation or single-stage mid/side masking.
-
-Requires only: numpy, scipy, soundfile (no ML models).
-Usage: python3 vocal_separator.py <input.wav> <vocals.wav> <instrumental.wav>
+Usage: python3.12 vocal_separator.py <input.wav> <vocals_out.wav> <instrumental_out.wav>
 """
 
 import sys
+import os
+import logging
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AI path — audio-separator (MDX-Net ONNX, SDR ~12)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def separate_ai(input_path, vocals_path, instrumental_path):
+    """
+    Use audio-separator with UVR_MDXNET_KARA_2.onnx.
+    Model (~68 MB) is downloaded automatically on first run to /tmp/audio-separator-models/.
+    """
+    from audio_separator.separator import Separator  # noqa: import guarded
+
+    output_dir  = os.path.dirname(os.path.abspath(vocals_path))
+    vox_stem    = os.path.splitext(os.path.basename(vocals_path))[0]
+    inst_stem   = os.path.splitext(os.path.basename(instrumental_path))[0]
+
+    print("[AI-SEP] Initializing MDX-Net (UVR_MDXNET_KARA_2.onnx)...", flush=True)
+
+    sep = Separator(
+        output_dir=output_dir,
+        output_format="WAV",
+        model_file_dir="/tmp/audio-separator-models",
+        log_level=logging.WARNING,     # suppress verbose model-loading chatter
+        normalization_threshold=0.9,
+    )
+
+    sep.load_model(model_filename="UVR_MDXNET_KARA_2.onnx")
+
+    print(f"[AI-SEP] Separating: {os.path.basename(input_path)}", flush=True)
+
+    sep.separate(
+        input_path,
+        custom_output_names={
+            "Vocals":       vox_stem,
+            "Instrumental": inst_stem,
+        },
+    )
+
+    print("[AI-SEP] Done.", flush=True)
+    return True
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DSP fallback — REPET + Mid/Side (numpy/scipy only, SDR ~7)
+# ─────────────────────────────────────────────────────────────────────────────
+
 import numpy as np
 import soundfile as sf
 from scipy.signal import stft, istft as scipy_istft
@@ -175,10 +217,10 @@ def ms_vocal_mask(ML, MR):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Main separation routine
+# DSP separation routine
 # ─────────────────────────────────────────────────────────────────────────────
 
-def separate(input_path, vocals_path, instrumental_path):
+def separate_dsp(input_path, vocals_path, instrumental_path):
     print(f"[SEP] Loading: {input_path}", flush=True)
     stereo, sr = load_stereo(input_path)
     L, R = stereo[0], stereo[1]
@@ -247,13 +289,27 @@ if __name__ == "__main__":
               file=sys.stderr)
         sys.exit(1)
 
-    inp  = sys.argv[1]
-    vox  = sys.argv[2]
-    inst = sys.argv[3]
+    inp, vox, inst = sys.argv[1], sys.argv[2], sys.argv[3]
 
+    # Try AI path first; fall back to DSP if audio-separator not installed
     try:
-        separate(inp, vox, inst)
+        import audio_separator  # noqa: F401 — just test availability
+        print("[SEP] audio-separator found — using AI model (MDX-Net, SDR ~12)", flush=True)
+        separate_ai(inp, vox, inst)
+    except ImportError:
+        print("[SEP] audio-separator not installed — using REPET+MidSide DSP (SDR ~7)", flush=True)
+        print("[SEP] For AI quality: brew install python@3.12 && pip3.12 install 'audio-separator[cpu]'", flush=True)
+        try:
+            separate_dsp(inp, vox, inst)
+        except Exception as e:
+            print(f"[SEP] DSP Error: {e}", file=sys.stderr)
+            import traceback; traceback.print_exc()
+            sys.exit(1)
     except Exception as e:
-        print(f"[SEP] Error: {e}", file=sys.stderr)
-        import traceback; traceback.print_exc()
-        sys.exit(1)
+        print(f"[SEP] AI separation failed ({e}) — falling back to REPET+MidSide DSP", flush=True)
+        try:
+            separate_dsp(inp, vox, inst)
+        except Exception as e2:
+            print(f"[SEP] DSP Error: {e2}", file=sys.stderr)
+            import traceback; traceback.print_exc()
+            sys.exit(1)

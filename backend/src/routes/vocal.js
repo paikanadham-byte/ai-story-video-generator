@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import { v4 as uuid } from "uuid";
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import { promisify } from "util";
 import { ensureDir } from "../utils/helpers.js";
 
@@ -13,6 +13,39 @@ const router = Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SEPARATOR_SCRIPT = path.resolve(__dirname, "../services/vocal_separator.py");
 const FFMPEG = process.env.FFMPEG_PATH || "/usr/local/bin/ffmpeg";
+
+/**
+ * Detect the best available Python interpreter at server startup.
+ * Prefers Python 3.12 (needed for audio-separator AI models).
+ * Falls back to python3 which uses the REPET+MidSide DSP path.
+ */
+function detectPython() {
+  if (process.env.PYTHON_PATH) return process.env.PYTHON_PATH;
+
+  const candidates = [
+    // Homebrew Python 3.12 — Intel Mac
+    "/usr/local/opt/python@3.12/bin/python3.12",
+    // Homebrew Python 3.12 — Apple Silicon Mac
+    "/opt/homebrew/opt/python@3.12/bin/python3.12",
+    // In PATH (works if brew linked it)
+    "python3.12",
+    // Last resort — Python 3.14 (uses REPET DSP fallback, no AI)
+    "python3",
+  ];
+
+  for (const py of candidates) {
+    try {
+      execSync(`"${py}" --version`, { timeout: 3000, stdio: "ignore" });
+      console.log(`[VOCAL] Using Python: ${py}`);
+      return py;
+    } catch {
+      // not found, try next
+    }
+  }
+  return "python3";
+}
+
+const PYTHON = detectPython();
 
 ensureDir("output/uploads").catch(() => {});
 ensureDir("output/vocal").catch(() => {});
@@ -59,8 +92,8 @@ router.post("/separate", upload.single("file"), async (req, res, next) => {
     const instWav = path.join(outDir, "instrumental_raw.wav");
 
     await execAsync(
-      `python3 "${SEPARATOR_SCRIPT}" "${wavPath}" "${voxWav}" "${instWav}"`,
-      { timeout: 300000 }  // allow up to 5 min for long tracks
+      `"${PYTHON}" "${SEPARATOR_SCRIPT}" "${wavPath}" "${voxWav}" "${instWav}"`,
+      { timeout: 300000 }  // allow up to 5 min (includes model download on first run)
     );
 
     // Step 3: encode WAV stems to MP3 at 320kbps
