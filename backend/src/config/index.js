@@ -28,8 +28,8 @@ const config = {
   },
 
   ffmpeg: {
-    path: process.env.FFMPEG_PATH || null,
-    probePath: process.env.FFPROBE_PATH || null,
+    path: process.env.FFMPEG_PATH || "/usr/local/bin/ffmpeg",
+    probePath: process.env.FFPROBE_PATH || "/usr/local/bin/ffprobe",
   },
 
   output: {
