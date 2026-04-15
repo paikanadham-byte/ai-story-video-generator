@@ -1,0 +1,14 @@
+{
+  "id": "clone_a80517aa",
+  "name": "TestVoice",
+  "gender": "male",
+  "style": "warm",
+  "baseVoice": "en-US-AndrewMultilingualNeural",
+  "rateAdjust": "+0%",
+  "pitchAdjust": "+0Hz",
+  "sampleDuration": 3,
+  "samplePath": "/Users/paikanadham/ai-story-video-generator/backend/data/voices/clone_a80517aa/sample.wav",
+  "originalPath": "/Users/paikanadham/ai-story-video-generator/backend/data/voices/clone_a80517aa/original.mp3",
+  "createdAt": "2026-04-15T18:40:59.889Z",
+  "status": "ready"
+}
