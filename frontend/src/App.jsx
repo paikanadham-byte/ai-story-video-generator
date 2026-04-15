@@ -50,14 +50,28 @@ function App() {
 
   // Listen for auth state changes
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
+    supabase.auth.getSession().then(({ data: { session: s }, error }) => {
+      if (error) {
+        // Stale/invalid session — clear it
+        supabase.auth.signOut().catch(() => {});
+        setSession(null);
+      } else {
+        setSession(s);
+      }
       setAuthLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, s) => {
-        setSession(s);
+      (event, s) => {
+        if (event === "TOKEN_REFRESHED" && !s) {
+          // Refresh token is invalid — sign out cleanly
+          supabase.auth.signOut().catch(() => {});
+          setSession(null);
+        } else if (event === "SIGNED_OUT") {
+          setSession(null);
+        } else {
+          setSession(s);
+        }
         setAuthLoading(false);
       }
     );

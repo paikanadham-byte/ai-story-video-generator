@@ -179,7 +179,35 @@ export async function fetchMediaForScene(visualDescription, sceneNumber, jobDir,
   const filename = `scene_${String(sceneNumber).padStart(3, "0")}_media.${ext}`;
   const filepath = path.join(jobDir, "media", filename);
   await ensureDir(path.dirname(filepath));
-  await downloadFile(chosen.url, filepath);
+
+  try {
+    await downloadFile(chosen.url, filepath);
+  } catch (err) {
+    console.warn(`[MEDIA] Download failed for scene ${sceneNumber}: ${err.message} — trying next source`);
+    usedMediaUrls.delete(chosen.url);
+
+    // Try alternative sources (different provider) before giving up
+    const allResults = await searchMedia(visualDescription.split(" ").slice(0, 3).join(" "));
+    const alternatives = [
+      ...allResults.videos.filter((v) => !usedMediaUrls.has(v.url) && v.url !== chosen.url),
+      ...allResults.images.filter((img) => !usedMediaUrls.has(img.url) && img.url !== chosen.url),
+    ];
+
+    for (const alt of alternatives.slice(0, 3)) {
+      try {
+        const altExt = alt.type === "video" ? "mp4" : "jpg";
+        const altFilename = `scene_${String(sceneNumber).padStart(3, "0")}_media.${altExt}`;
+        const altFilepath = path.join(jobDir, "media", altFilename);
+        await downloadFile(alt.url, altFilepath);
+        usedMediaUrls.add(alt.url);
+        return { sceneNumber, media: { ...alt, localPath: altFilepath, filename: altFilename }, error: null };
+      } catch {
+        // Try next
+      }
+    }
+
+    return { sceneNumber, media: null, error: `Download failed: ${err.message}` };
+  }
 
   return {
     sceneNumber,
@@ -191,8 +219,17 @@ export async function fetchMediaForScene(visualDescription, sceneNumber, jobDir,
 // ─── Download ───
 
 async function downloadFile(url, dest) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Download failed: ${res.status} ${url}`);
-  const ws = createWriteStream(dest);
-  await pipeline(res.body, ws);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 30000); // 30s timeout
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { "User-Agent": "StoryForge/1.0" },
+    });
+    if (!res.ok) throw new Error(`Download failed: ${res.status} ${url}`);
+    const ws = createWriteStream(dest);
+    await pipeline(res.body, ws);
+  } finally {
+    clearTimeout(timer);
+  }
 }
